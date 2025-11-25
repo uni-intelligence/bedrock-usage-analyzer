@@ -1,19 +1,19 @@
 # Bedrock Token Usage Statistics Calculator
 
-This CLI tool helps to visualize foundation model (FM) usage in [Amazon Bedrock](https://aws.amazon.com/bedrock/). It aggregates the FM usage across Bedrock application inference profiles and provides visibility on current usage gap towards the service quotas (e.g. tokens-per-minute/TPM and requests-per-minute/RPM)
+This CLI tool visualizes foundation model (FM) usage in [Amazon Bedrock](https://aws.amazon.com/bedrock/). It calculates the  tokens-per-minute/TPM and requests-per-minute/RPM. It also aggregates the FM usage across Bedrock application inference profiles and provides visibility on current usage gap towards the service quotas.
 
-While [Amazon CloudWatch](https://aws.amazon.com/cloudwatch/) already provides metrics for the FMss used in Bedrock, it might not be straightforward to see how each of your custom application inference profiles contribute to a certain FM usage in Bedrock. Also, the quota lookup needs to be done separately via [AWS service quotas](https://docs.aws.amazon.com/general/latest/gr/aws_service_limits.html). With this tool, you can specify the region and model to analyze and it will fetch the usage across last 1 hour, 1 day, 7 days, 14 days, and 30 days, each with aggregated data across the application inference profiles. It will generate HTML report containing the statistics table and time series data.
+While [Amazon CloudWatch](https://aws.amazon.com/cloudwatch/) already provides metrics for the FMs used in Bedrock, it might not be straightforward to calculate TPM & RPM, to aggregate token usage across application inference profiles, and see how each profile contributes to usage. Also, the quota lookup needs to be done separately via [AWS service quotas](https://docs.aws.amazon.com/general/latest/gr/aws_service_limits.html). With this tool, you can specify the region and model to analyze and it will fetch the usage across last 1 hour, 1 day, 7 days, 14 days, and 30 days, each with aggregated data across the application inference profiles. It will generate HTML report containing the statistics table and time series data.
 
-This CLI tool can be used to answer questions like:
-1. What is the TPM, and RPM of a particular FM in Bedrock in certain region, across all of my application inference profiles?
-2. How does each inference profile contribute to that RPM usage?
-3. Which projects use the most of TPM for certain model? (provided that you tag the application inference profile appropriately)
-4. When did the throttling occur for certain model and which project or application inference profile caused that?
-5. How far is my current TPM against the quota?
+This CLI tool can help answers:
+1. What is the usage TPM and RPM of Llama 4 Scout model in Bedrock in us-west-2?
+2. What is the total TPM of Sonnet 4.5 global endpoint in ap-southeast-1 across all of Bedrock application inference profiles for that model?
+3. What project and application tags contribute the most to my usage of Nova Lite in this region? (provided that you tag the application inference profile appropriately)
+4. When did the throttling occur for this model and which project or application inference profile caused that?
+5. How far is my current TPM against the quota for Qwen3 in ap-northeast-1?
 
 This tool works by calling AWS APIs from your local machine, including CloudWatch [Get Metric Data](https://docs.aws.amazon.com/AmazonCloudWatch/latest/APIReference/API_GetMetricData.html) and Bedrock [List Inference Profiles](https://docs.aws.amazon.com/bedrock/latest/APIReference/API_ListInferenceProfiles.html). It then generates a JSON and HTML output file per model/system inference profile being analyzed inside `results` folder. The tool uses metadata files in `metadata` folder to obtain the list of available regions and FMs and to map each FM into the AWS service quotas L code (L-xxx). 
 
-You can refresh the available regions, the available foundation models, and the service quotas mapping for the FMs using the scripts in `scripts` folder. The FM to service quotas mapping is done intelligently with the help of foundation model called through Bedrock.
+You can refresh the available regions, the available foundation models, and the service quotas mapping for the FMs using the scripts in `bin` folder. The FM to service quotas mapping is done intelligently with the help of foundation model called through Bedrock.
 
 ## Example Output
 
@@ -149,8 +149,8 @@ You can install it in two ways:
 #### Option 1: Editable Install (Recommended for Development)
 ```bash
 # Clone the repository
-git clone https://github.com/aws-samples/sample-analyze-bedrock-usage-and-quotas.git
-cd sample-analyze-bedrock-usage-and-quotas
+git clone https://github.com/awslabs/bedrock-usage-analyzer.git
+cd bedrock-usage-analyzer
 
 # Install in editable mode
 pip install -e .
@@ -159,8 +159,8 @@ pip install -e .
 #### Option 2: Using the bin scripts (Auto-setup)
 ```bash
 # Clone the repository
-git clone https://github.com/aws-samples/sample-analyze-bedrock-usage-and-quotas.git
-cd sample-analyze-bedrock-usage-and-quotas
+git clone https://github.com/awslabs/bedrock-usage-analyzer.git
+cd bedrock-usage-analyzer
 
 # The bin scripts will automatically create venv and install
 ./bin/analyze-bedrock-usage
@@ -271,38 +271,6 @@ The HTML report contains several sections:
 - Any non-zero throttle count indicates you've hit rate limits
 - Check which time periods show throttles to identify peak usage times
 
-### JSON Output Structure
-
-```json
-{
-  "model_id": "anthropic.claude-3-7-sonnet-20250219-v1:0",
-  "generated_at": "2025-10-23T07:42:16",
-  "quotas": {
-    "tpm": 400000,
-    "rpm": 2000,
-    "tpd": null
-  },
-  "stats": {
-    "1hour": {
-      "TPM": {"p50": 1234, "p90": 5678, "avg": 3456, "sum": 123456, "count": 36},
-      "RPM": {"p50": 10, "p90": 45, "avg": 25, "sum": 900, "count": 36},
-      ...
-    },
-    ...
-  },
-  "time_series": {
-    "1hour": {
-      "TPM": {
-        "timestamps": ["2025-10-23T07:00:00Z", ...],
-        "values": [1234, ...]
-      },
-      ...
-    },
-    ...
-  }
-}
-```
-
 ## Advanced Features
 
 ### Quota Mapping
@@ -330,33 +298,6 @@ You can then validate the mapped quota. To make the validation easier, you can r
 ```
 
 It will be saved in ./metadata/quota-index.csv. You can then validate the mapping for each row, either manually or with your AI assistant.
-
-### Metadata Management
-
-**Foundation Model Lists** (`metadata/fm-list-{region}.yml`):
-```yaml
-models:
-- model_id: anthropic.claude-3-7-sonnet-20250219-v1:0
-  provider: Anthropic
-  inference_types: [ON_DEMAND, INFERENCE_PROFILE]
-  inference_profiles: [us, eu, global]
-  endpoints:
-    base:
-      quotas: {tpm: L-12345, rpm: L-67890, tpd: null}
-    us:
-      quotas: {tpm: L-ABCDE, rpm: L-FGHIJ, tpd: null}
-    global:
-      quotas: {tpm: L-KLMNO, rpm: L-PQRST, tpd: null}
-```
-
-**Regions List** (`metadata/regions.yml`):
-```yaml
-regions:
-  - us-east-1
-  - us-west-2
-  - eu-west-1
-  ...
-```
 
 ### Customizing Analysis
 
