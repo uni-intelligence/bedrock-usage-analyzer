@@ -15,19 +15,13 @@ This tool works by calling AWS APIs from your local machine, including CloudWatc
 
 You can refresh the available regions, the available foundation models, and the service quotas mapping for the FMs using the scripts in `scripts` folder. The FM to service quotas mapping is done intelligently with the help of foundation model called through Bedrock.
 
-## ⚠️ **Important Disclaimer**
-
-**This is sample code provided for educational and demonstration purposes only.** Before using this tool in any environment, you are strongly advised to review all code thoroughly and evaluate it against best practices, security and compliance standards, and other requirements.
-
-
 ## Example Output
 
 The tool generates HTML report showing token usage over time with quota limits. Please find the example screenshots in the following.
 
-![image 1](./examples/image1.png)
-![image 2](./examples/image2.png)
-![image 3](./examples/image3.png)
-![image 4](./examples/image4.png)
+![image 1](./assets/image1.png)
+![image 2](./assets/image2.png)
+![image 3](./assets/image3.png)
 
 *The report includes:*
 - **Quota visualization**: Red dashed lines showing TPM/RPM/TPD quotas
