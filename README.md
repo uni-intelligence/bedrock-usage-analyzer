@@ -121,9 +121,10 @@ Note: You need to replace some part with your own account ID and the region used
         "bedrock:InvokeModel"
       ],
       "Resource": [
-        "arn:aws:bedrock:your-current-region::foundation-model/anthropic.claude-*",
-        "arn:aws:bedrock:your-current-region:your-current-account:inference-profile/*",
-        "arn:aws:bedrock:your-current-region:your-current-account:application-inference-profile/*"
+        "arn:aws:bedrock:::foundation-model/anthropic.claude-*",
+        "arn:aws:bedrock:YOUR_REGION_FOR_LLM_CALL::foundation-model/anthropic.claude-*",
+        "arn:aws:bedrock:YOUR_REGION_FOR_LLM_CALL:YOUR_CURRENT_ACCOUNT_ID:inference-profile/*",
+        "arn:aws:bedrock:YOUR_REGION_FOR_LLM_CALL:YOUR_CURRENT_ACCOUNT_ID:application-inference-profile/*"
       ]
     }
   ]
