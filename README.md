@@ -5,11 +5,11 @@ This CLI tool visualizes foundation model (FM) usage in [Amazon Bedrock](https:/
 While [Amazon CloudWatch](https://aws.amazon.com/cloudwatch/) already provides metrics for the FMs used in Bedrock, it might not be straightforward to calculate TPM & RPM, to aggregate token usage across application inference profiles, and see how each profile contributes to usage. Also, the quota lookup needs to be done separately via [AWS service quotas](https://docs.aws.amazon.com/general/latest/gr/aws_service_limits.html). With this tool, you can specify the region and model to analyze and it will fetch the usage across last 1 hour, 1 day, 7 days, 14 days, and 30 days, each with aggregated data across the application inference profiles. It will generate HTML report containing the statistics table and time series data.
 
 This CLI tool can help answers:
-1. What is the usage TPM and RPM of Llama 4 Scout model in Bedrock in us-west-2?
-2. What is the total TPM of Sonnet 4.5 global endpoint in ap-southeast-1 across all of Bedrock application inference profiles for that model?
-3. What project and application tags contribute the most to my usage of Nova Lite in this region? (provided that you tag the application inference profile appropriately)
-4. When did the throttling occur for this model and which project or application inference profile caused that?
-5. How far is my current TPM against the quota for Qwen3 in ap-northeast-1?
+1. What is the usage TPM and RPM of this FM?
+2. What is the total TPM across all of Bedrock application inference profiles for that model?
+3. What project/application tags contribute the most to my usage of that model? (provided that you tag the application inference profile appropriately)
+4. When did the throttling occur for this model and which project/application contributed the most for that?
+5. How far is my current TPM against the quota?
 
 This tool works by calling AWS APIs from your local machine, including CloudWatch [Get Metric Data](https://docs.aws.amazon.com/AmazonCloudWatch/latest/APIReference/API_GetMetricData.html) and Bedrock [List Inference Profiles](https://docs.aws.amazon.com/bedrock/latest/APIReference/API_ListInferenceProfiles.html). It then generates a JSON and HTML output file per model/system inference profile being analyzed inside `results` folder. The tool uses metadata files in `metadata` folder to obtain the list of available regions and FMs and to map each FM into the AWS service quotas L code (L-xxx). 
 
@@ -360,8 +360,7 @@ The analyzer supports various customization options through the interactive prom
 **`./bin/refresh-quota-index`**
 - Generates CSV index of all quota mappings for validation
 
-## Troubleshooting
-
+## Troubleshooting and advanced scenarios
 ### Analysis Issues
 
 **Q: "No metrics found" error**
@@ -413,6 +412,12 @@ A: CloudWatch queries can take time for large time ranges. To speed up:
 1. Analyze shorter time periods
 2. Use specific models instead of analyzing all models
 3. Check your network connection to AWS
+
+### Advanced scenarios
+
+**Q: How do I swith to different AWS accounts when using this tool**
+A: You can use different AWS profile as shown in the following code snippet
+`AWS_PROFILE=<YOUR AWS PROFILE NAME> ./bin/analyze-bedrock-usage`
 
 ## Security Considerations
 
