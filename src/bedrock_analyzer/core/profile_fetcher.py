@@ -41,6 +41,11 @@ class InferenceProfileFetcher:
         if self._all_profiles_cache is None:
             logger.info(f"  Calling list_inference_profiles API (fetching all profiles)...")
             self._all_profiles_cache = []
+            
+            if not hasattr(self.bedrock_client, 'list_inference_profiles'):
+                logger.info(f"No application profiles found (API not available)")
+                return profiles, profile_names, profile_metadata
+
             response = self.bedrock_client.list_inference_profiles(
                 maxResults=1000,
                 typeEquals='APPLICATION'
