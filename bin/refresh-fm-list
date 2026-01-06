@@ -18,8 +18,8 @@ fi
 source "$VENV_DIR/bin/activate"
 
 # Install package in editable mode if not already installed
-if ! python -c "import bedrock_analyzer" 2>/dev/null; then
-    echo "Installing bedrock_analyzer package..."
+if ! python -c "import bedrock_usage_analyzer" 2>/dev/null; then
+    echo "Installing bedrock_usage_analyzer package..."
     pip install -q -e "$PROJECT_ROOT"
 fi
 
@@ -28,7 +28,7 @@ cd "$PROJECT_ROOT"
 
 # Run the fm-list refresh command with optional region argument
 if [ -n "$1" ]; then
-    python -m bedrock_analyzer.cli.refresh fm-list "$1"
+    python -m bedrock_usage_analyzer.cli.refresh fm-list "$1"
 else
-    python -m bedrock_analyzer.cli.refresh fm-list
+    python -m bedrock_usage_analyzer.cli.refresh fm-list
 fi

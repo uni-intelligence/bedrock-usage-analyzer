@@ -11,11 +11,11 @@ import os
 import yaml
 from datetime import datetime, timedelta, timezone
 
-from bedrock_analyzer.core.user_inputs import UserInputs
-from bedrock_analyzer.core.profile_fetcher import InferenceProfileFetcher
-from bedrock_analyzer.core.metrics_fetcher import CloudWatchMetricsFetcher
-from bedrock_analyzer.core.output_generator import OutputGenerator
-from bedrock_analyzer.aws.bedrock import get_regional_profile_prefixes
+from bedrock_usage_analyzer.core.user_inputs import UserInputs
+from bedrock_usage_analyzer.core.profile_fetcher import InferenceProfileFetcher
+from bedrock_usage_analyzer.core.metrics_fetcher import CloudWatchMetricsFetcher
+from bedrock_usage_analyzer.core.output_generator import OutputGenerator
+from bedrock_usage_analyzer.aws.bedrock import get_regional_profile_prefixes
 
 logger = logging.getLogger(__name__)
 

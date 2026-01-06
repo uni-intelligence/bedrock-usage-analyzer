@@ -5,7 +5,7 @@
 
 import logging
 
-from bedrock_analyzer.aws.bedrock import get_default_region_prefix_map
+from bedrock_usage_analyzer.aws.bedrock import get_default_region_prefix_map
 
 logger = logging.getLogger(__name__)
 

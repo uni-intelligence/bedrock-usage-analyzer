@@ -3,6 +3,7 @@
 
 """Bedrock Usage Analyzer - Token usage statistics for Amazon Bedrock"""
 
-from bedrock_analyzer.__version__ import __version__
+from importlib.metadata import version
 
+__version__ = version("bedrock-usage-analyzer")
 __all__ = ["__version__"]

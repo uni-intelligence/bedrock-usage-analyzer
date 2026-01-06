@@ -8,10 +8,10 @@ import copy
 import sys
 from typing import Dict, List, Optional
 
-from bedrock_analyzer.utils.yaml_handler import load_yaml, save_yaml
-from bedrock_analyzer.aws.servicequotas import fetch_service_quotas
-from bedrock_analyzer.aws.bedrock_llm import extract_common_name, extract_quota_codes
-from bedrock_analyzer.aws.bedrock import get_endpoint_quota_keywords
+from bedrock_usage_analyzer.utils.yaml_handler import load_yaml, save_yaml
+from bedrock_usage_analyzer.aws.servicequotas import fetch_service_quotas
+from bedrock_usage_analyzer.aws.bedrock_llm import extract_common_name, extract_quota_codes
+from bedrock_usage_analyzer.aws.bedrock import get_endpoint_quota_keywords
 
 logger = logging.getLogger(__name__)
 

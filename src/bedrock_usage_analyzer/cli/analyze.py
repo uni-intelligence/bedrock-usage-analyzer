@@ -7,8 +7,8 @@ import logging
 import sys
 import traceback
 
-from bedrock_analyzer.core.user_inputs import UserInputs
-from bedrock_analyzer.core.analyzer import BedrockAnalyzer
+from bedrock_usage_analyzer.core.user_inputs import UserInputs
+from bedrock_usage_analyzer.core.analyzer import BedrockAnalyzer
 
 # Configure logging
 logging.basicConfig(

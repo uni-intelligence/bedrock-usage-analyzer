@@ -6,7 +6,7 @@
 import sys
 from typing import Tuple
 
-from bedrock_analyzer.utils.yaml_handler import load_yaml
+from bedrock_usage_analyzer.utils.yaml_handler import load_yaml
 
 
 def select_from_list(

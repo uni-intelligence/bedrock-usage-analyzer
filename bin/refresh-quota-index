@@ -18,8 +18,8 @@ fi
 source "$VENV_DIR/bin/activate"
 
 # Install package in editable mode if not already installed
-if ! python -c "import bedrock_analyzer" 2>/dev/null; then
-    echo "Installing bedrock_analyzer package..."
+if ! python -c "import bedrock_usage_analyzer" 2>/dev/null; then
+    echo "Installing bedrock_usage_analyzer package..."
     pip install -q -e "$PROJECT_ROOT"
 fi
 
@@ -27,4 +27,4 @@ fi
 cd "$PROJECT_ROOT"
 
 # Run the quota index command
-python -m bedrock_analyzer.cli.refresh quota-index
+python -m bedrock_usage_analyzer.cli.refresh quota-index

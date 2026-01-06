@@ -8,7 +8,7 @@ import logging
 from typing import List
 import sys
 
-from bedrock_analyzer.utils.yaml_handler import save_yaml
+from bedrock_usage_analyzer.utils.yaml_handler import save_yaml
 
 logger = logging.getLogger(__name__)
 

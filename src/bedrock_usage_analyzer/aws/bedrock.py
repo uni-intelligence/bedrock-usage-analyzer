@@ -38,7 +38,7 @@ def _load_prefix_mapping() -> List[Dict]:
     metadata_file = 'metadata/prefix-mapping.yml'
     
     if os.path.exists(metadata_file):
-        from bedrock_analyzer.utils.yaml_handler import load_yaml
+        from bedrock_usage_analyzer.utils.yaml_handler import load_yaml
         data = load_yaml(metadata_file)
         _prefix_mapping_cache = data.get('prefixes', [])
         return _prefix_mapping_cache

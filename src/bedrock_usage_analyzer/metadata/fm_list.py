@@ -7,8 +7,8 @@ import os
 import logging
 from typing import List, Dict
 
-from bedrock_analyzer.utils.yaml_handler import load_yaml, save_yaml
-from bedrock_analyzer.aws.bedrock import (
+from bedrock_usage_analyzer.utils.yaml_handler import load_yaml, save_yaml
+from bedrock_usage_analyzer.aws.bedrock import (
     fetch_foundation_models,
     fetch_all_inference_profiles,
     build_profile_map,

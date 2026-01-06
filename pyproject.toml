@@ -1,10 +1,10 @@
 [build-system]
-requires = ["setuptools>=45", "wheel", "setuptools_scm[toml]>=6.2"]
+requires = ["setuptools>=45", "wheel"]
 build-backend = "setuptools.build_meta"
 
 [project]
 name = "bedrock-usage-analyzer"
-version = "0.2.2-beta"
+version = "0.3.0-beta"
 description = "Calculate token usage statistics and map quotas for Amazon Bedrock models"
 readme = "README.md"
 requires-python = ">=3.9"
@@ -32,4 +32,4 @@ package-dir = {"" = "src"}
 where = ["src"]
 
 [tool.setuptools.package-data]
-bedrock_analyzer = ["templates/*.html"]
+bedrock_usage_analyzer = ["templates/*.html"]

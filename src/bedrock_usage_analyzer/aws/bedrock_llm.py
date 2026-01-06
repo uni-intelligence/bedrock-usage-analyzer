@@ -7,7 +7,7 @@ import boto3
 import sys
 from typing import Optional, Dict, List
 
-from bedrock_analyzer.aws.bedrock import get_endpoint_descriptions
+from bedrock_usage_analyzer.aws.bedrock import get_endpoint_descriptions
 
 
 def extract_common_name(region: str, model_id: str, fm_model_id: str) -> Optional[str]:

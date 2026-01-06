@@ -8,9 +8,9 @@ import logging
 from typing import Dict, List, Set
 import sys
 
-from bedrock_analyzer.utils.yaml_handler import load_yaml, save_yaml
-from bedrock_analyzer.utils.csv_handler import write_csv
-from bedrock_analyzer.aws.servicequotas import get_quota_details
+from bedrock_usage_analyzer.utils.yaml_handler import load_yaml, save_yaml
+from bedrock_usage_analyzer.utils.csv_handler import write_csv
+from bedrock_usage_analyzer.aws.servicequotas import get_quota_details
 
 logger = logging.getLogger(__name__)
 

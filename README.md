@@ -169,7 +169,7 @@ cd bedrock-usage-analyzer
 ./bin/analyze-bedrock-usage
 
 # Windows (without bash): Run Python module directly
-python -m bedrock_analyzer.cli.analyze
+python -m bedrock_usage_analyzer.cli.analyze
 ```
 
 ### Step 2: Configure AWS Credentials
@@ -188,15 +188,15 @@ Before analyzing usage, you may want to refresh the foundation model lists:
 ```bash
 # Refresh regions list
 ./bin/refresh-regions
-# Windows: python -m bedrock_analyzer.cli.refresh regions
+# Windows: python -m bedrock_usage_analyzer.cli.refresh regions
 
 # Refresh foundation models for all regions
 ./bin/refresh-fm-list
-# Windows: python -m bedrock_analyzer.cli.refresh fm-list
+# Windows: python -m bedrock_usage_analyzer.cli.refresh fm-list
 
 # Or refresh for a specific region
 ./bin/refresh-fm-list us-west-2
-# Windows: python -m bedrock_analyzer.cli.refresh fm-list us-west-2
+# Windows: python -m bedrock_usage_analyzer.cli.refresh fm-list us-west-2
 ```
 
 This step is optional because this repository comes with preloaded metadata that contains these information. However, you might want to refresh those metadata since new regions, new foundation models, or new quotas for the FMs might have come since this repository was refreshed.
@@ -206,7 +206,7 @@ This step is optional because this repository comes with preloaded metadata that
 ```bash
 # Launch the interactive usage analyzer
 ./bin/analyze-bedrock-usage
-# Windows: python -m bedrock_analyzer.cli.analyze
+# Windows: python -m bedrock_usage_analyzer.cli.analyze
 ```
 
 The script will prompt you to:
