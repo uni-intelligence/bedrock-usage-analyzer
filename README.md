@@ -15,7 +15,7 @@ This tool works by calling AWS APIs from your local machine, including CloudWatc
 
 You can refresh the available regions, the available foundation models, and the service quotas mapping for the FMs using the scripts in `bin` folder. The FM to service quotas mapping is done intelligently with the help of foundation model called through Bedrock.
 
-⚠️ **Important Disclaimer** This tool is currently under 0.2.0-beta version. Before using this tool in any production or critical environment, you are strongly advised to review all code thoroughly and evaluate it against best practices, security and compliance standards, and other requirements.
+⚠️ **Important Disclaimer** This tool is currently under 0.3.0-beta version. Before using this tool in any production or critical environment, you are strongly advised to review all code thoroughly and evaluate it against best practices, security and compliance standards, and other requirements.
 
 ## Example Output
 
@@ -36,7 +36,7 @@ The tool generates HTML report showing token usage over time with quota limits. 
 ### Required Software
 - **Python** >= 3.9 with [venv](https://packaging.python.org/en/latest/guides/installing-using-pip-and-virtual-environments/)
 - **AWS CLI** configured with appropriate credentials
-- **GIT** to clone this repository (not needed if you download manually into .zip)
+- **GIT** to clone this repository (only needed for development install)
 
 ### AWS Account Requirements
 - **Bedrock Access**: Enabled foundation models in your AWS account
@@ -147,9 +147,17 @@ Note: You need to replace some part with your own account ID and the region used
 ## Setup Guide
 
 ### Step 1: Clone and Set Up Environment
-You can install it in two ways:
+You can install it in three ways:
 
-#### Option 1: Editable Install (Recommended for Development)
+#### Option 1: Install from PyPI (Recommended)
+```bash
+pip install bedrock-usage-analyzer
+
+# Run the analyzer
+python -m bedrock_usage_analyzer.cli.analyze
+```
+
+#### Option 2: Editable Install (For Development)
 ```bash
 # Clone the repository
 git clone https://github.com/awslabs/bedrock-usage-analyzer.git
@@ -159,7 +167,7 @@ cd bedrock-usage-analyzer
 pip install -e .
 ```
 
-#### Option 2: Using the bin scripts (Auto-setup)
+#### Option 3: Using the bin scripts (Auto-setup)
 ```bash
 # Clone the repository
 git clone https://github.com/awslabs/bedrock-usage-analyzer.git
