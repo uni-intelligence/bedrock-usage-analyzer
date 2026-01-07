@@ -16,6 +16,8 @@ anthropic.claude-sonnet-4-5-20250929-v1:0,au,tpd,L-381AD9EE,Model invocation max
 anthropic.claude-sonnet-4-5-20250929-v1:0,au,tpm,L-F4DDD3EB,Cross-region model inference tokens per minute for Anthropic Claude Sonnet 4.5 V1
 twelvelabs.pegasus-1-2-v1:0,us,rpm,L-6E046197,Cross-region model inference requests per minute for Twelve Labs Pegasus
 twelvelabs.pegasus-1-2-v1:0,apac,rpm,L-6E046197,Cross-region model inference requests per minute for Twelve Labs Pegasus
+twelvelabs.pegasus-1-2-v1:0,base,concurrent,L-CABD464E,On-demand InvokeModel concurrent requests for Twelve Labs Pegasus
+twelvelabs.pegasus-1-2-v1:0,base,rpm,L-5E8692C5,On-demand model inference requests per minute for Twelve Labs Pegasus
 twelvelabs.pegasus-1-2-v1:0,eu,rpm,L-6E046197,Cross-region model inference requests per minute for Twelve Labs Pegasus
 amazon.nova-2-lite-v1:0,global,rpm,L-D5F39C2F,Global cross-region model inference requests per minute for Amazon Nova 2 Lite
 amazon.nova-2-lite-v1:0,global,tpd,L-AD940EDE,Global cross-region model inference tokens per day for Amazon Nova 2 Lite
@@ -84,8 +86,6 @@ anthropic.claude-opus-4-5-20251101-v1:0,us,tpm,L-7007E9C9,Cross-region model inf
 anthropic.claude-opus-4-5-20251101-v1:0,eu,rpm,L-27989F42,Cross-region model inference requests per minute for Anthropic Claude Opus 4.5
 anthropic.claude-opus-4-5-20251101-v1:0,eu,tpd,L-F397ECBF,Model invocation max tokens per day for Anthropic Claude Opus 4.5 (doubled for cross-region calls)
 anthropic.claude-opus-4-5-20251101-v1:0,eu,tpm,L-7007E9C9,Cross-region model inference tokens per minute for Anthropic Claude Opus 4.5
-cohere.embed-english-v3,base,rpm,L-FF8E7864,On-demand model inference requests per minute for Cohere Embed English
-cohere.embed-english-v3,base,tpm,L-A2BE277A,On-demand model inference tokens per minute for Cohere Embed English
 cohere.embed-v4:0,global,rpm,L-7089DC7D,Global cross-region model inference requests per minute for Cohere Embed V4
 cohere.embed-v4:0,global,tpd,L-795ADAB0,Global cross-region model inference tokens per day for Cohere Embed V4
 cohere.embed-v4:0,global,tpm,L-02DFBB76,Global cross-region model inference tokens per minute for Cohere Embed V4

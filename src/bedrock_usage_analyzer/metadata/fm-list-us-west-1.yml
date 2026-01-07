@@ -168,12 +168,10 @@ models:
   - INFERENCE_PROFILE
   model_id: anthropic.claude-sonnet-4-20250514-v1:0
   provider: Anthropic
-- endpoints: {}
-  inference_types: []
+- inference_types: []
   model_id: anthropic.claude-sonnet-4-20250514-v1:0:200k
   provider: Anthropic
-- endpoints: {}
-  inference_types: []
+- inference_types: []
   model_id: anthropic.claude-sonnet-4-20250514-v1:0:32k
   provider: Anthropic
 - endpoints:
@@ -270,12 +268,10 @@ models:
   - INFERENCE_PROFILE
   model_id: meta.llama4-maverick-17b-instruct-v1:0
   provider: Meta
-- endpoints: {}
-  inference_types: []
+- inference_types: []
   model_id: meta.llama4-maverick-17b-instruct-v1:0:128k
   provider: Meta
-- endpoints: {}
-  inference_types: []
+- inference_types: []
   model_id: meta.llama4-maverick-17b-instruct-v1:0:1m
   provider: Meta
 - endpoints:
@@ -297,12 +293,10 @@ models:
   - INFERENCE_PROFILE
   model_id: meta.llama4-scout-17b-instruct-v1:0
   provider: Meta
-- endpoints: {}
-  inference_types: []
+- inference_types: []
   model_id: meta.llama4-scout-17b-instruct-v1:0:10m
   provider: Meta
-- endpoints: {}
-  inference_types: []
+- inference_types: []
   model_id: meta.llama4-scout-17b-instruct-v1:0:128k
   provider: Meta
 - endpoints:

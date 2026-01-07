@@ -39,6 +39,19 @@ models:
 - endpoints:
     base:
       quotas:
+        concurrent:
+          code: L-995EBD81
+          name: On-demand InvokeModel concurrent requests for Amazon Nova 2 Sonic
+        rpm: null
+        tpd: null
+        tpm: null
+  inference_types:
+  - ON_DEMAND
+  model_id: amazon.nova-2-sonic-v1:0
+  provider: Amazon
+- endpoints:
+    base:
+      quotas:
         concurrent: null
         rpm:
           code: L-E386A278

@@ -83,8 +83,7 @@ models:
   - ON_DEMAND
   model_id: amazon.titan-embed-image-v1
   provider: Amazon
-- endpoints: {}
-  inference_types:
+- inference_types:
   - PROVISIONED
   model_id: amazon.titan-embed-image-v1:0
   provider: Amazon
@@ -257,19 +256,14 @@ models:
     base:
       quotas:
         concurrent: null
-        rpm:
-          code: L-FF8E7864
-          name: On-demand model inference requests per minute for Cohere Embed English
+        rpm: null
         tpd: null
-        tpm:
-          code: L-A2BE277A
-          name: On-demand model inference tokens per minute for Cohere Embed English
+        tpm: null
   inference_types:
   - ON_DEMAND
   model_id: cohere.embed-english-v3
   provider: Cohere
-- endpoints: {}
-  inference_types:
+- inference_types:
   - PROVISIONED
   model_id: cohere.embed-english-v3:0:512
   provider: Cohere
@@ -284,8 +278,7 @@ models:
   - ON_DEMAND
   model_id: cohere.embed-multilingual-v3
   provider: Cohere
-- endpoints: {}
-  inference_types:
+- inference_types:
   - PROVISIONED
   model_id: cohere.embed-multilingual-v3:0:512
   provider: Cohere

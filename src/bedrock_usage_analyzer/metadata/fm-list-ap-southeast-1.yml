@@ -294,13 +294,9 @@ models:
     base:
       quotas:
         concurrent: null
-        rpm:
-          code: L-FF8E7864
-          name: On-demand model inference requests per minute for Cohere Embed English
+        rpm: null
         tpd: null
-        tpm:
-          code: L-A2BE277A
-          name: On-demand model inference tokens per minute for Cohere Embed English
+        tpm: null
   inference_types:
   - ON_DEMAND
   model_id: cohere.embed-english-v3

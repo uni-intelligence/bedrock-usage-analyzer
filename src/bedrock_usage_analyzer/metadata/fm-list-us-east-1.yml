@@ -70,8 +70,7 @@ models:
   - INFERENCE_PROFILE
   model_id: amazon.nova-2-lite-v1:0
   provider: Amazon
-- endpoints: {}
-  inference_types:
+- inference_types:
   - PROVISIONED
   model_id: amazon.nova-2-lite-v1:0:256k
   provider: Amazon
@@ -147,13 +146,11 @@ models:
   - INFERENCE_PROFILE
   model_id: amazon.nova-lite-v1:0
   provider: Amazon
-- endpoints: {}
-  inference_types:
+- inference_types:
   - PROVISIONED
   model_id: amazon.nova-lite-v1:0:24k
   provider: Amazon
-- endpoints: {}
-  inference_types:
+- inference_types:
   - PROVISIONED
   model_id: amazon.nova-lite-v1:0:300k
   provider: Amazon
@@ -185,13 +182,11 @@ models:
   - INFERENCE_PROFILE
   model_id: amazon.nova-micro-v1:0
   provider: Amazon
-- endpoints: {}
-  inference_types:
+- inference_types:
   - PROVISIONED
   model_id: amazon.nova-micro-v1:0:128k
   provider: Amazon
-- endpoints: {}
-  inference_types:
+- inference_types:
   - PROVISIONED
   model_id: amazon.nova-micro-v1:0:24k
   provider: Amazon
@@ -217,20 +212,16 @@ models:
   - INFERENCE_PROFILE
   model_id: amazon.nova-premier-v1:0
   provider: Amazon
-- endpoints: {}
-  inference_types: []
+- inference_types: []
   model_id: amazon.nova-premier-v1:0:1000k
   provider: Amazon
-- endpoints: {}
-  inference_types: []
+- inference_types: []
   model_id: amazon.nova-premier-v1:0:20k
   provider: Amazon
-- endpoints: {}
-  inference_types: []
+- inference_types: []
   model_id: amazon.nova-premier-v1:0:8k
   provider: Amazon
-- endpoints: {}
-  inference_types: []
+- inference_types: []
   model_id: amazon.nova-premier-v1:0:mm
   provider: Amazon
 - endpoints:
@@ -261,13 +252,11 @@ models:
   - INFERENCE_PROFILE
   model_id: amazon.nova-pro-v1:0
   provider: Amazon
-- endpoints: {}
-  inference_types:
+- inference_types:
   - PROVISIONED
   model_id: amazon.nova-pro-v1:0:24k
   provider: Amazon
-- endpoints: {}
-  inference_types:
+- inference_types:
   - PROVISIONED
   model_id: amazon.nova-pro-v1:0:300k
   provider: Amazon
@@ -344,8 +333,7 @@ models:
   - ON_DEMAND
   model_id: amazon.titan-embed-image-v1
   provider: Amazon
-- endpoints: {}
-  inference_types:
+- inference_types:
   - PROVISIONED
   model_id: amazon.titan-embed-image-v1:0
   provider: Amazon
@@ -366,8 +354,7 @@ models:
   - ON_DEMAND
   model_id: amazon.titan-embed-text-v1
   provider: Amazon
-- endpoints: {}
-  inference_types:
+- inference_types:
   - PROVISIONED
   model_id: amazon.titan-embed-text-v1:2:8k
   provider: Amazon
@@ -388,8 +375,7 @@ models:
   - ON_DEMAND
   model_id: amazon.titan-embed-text-v2:0
   provider: Amazon
-- endpoints: {}
-  inference_types: []
+- inference_types: []
   model_id: amazon.titan-embed-text-v2:0:8k
   provider: Amazon
 - endpoints:
@@ -427,8 +413,7 @@ models:
   - ON_DEMAND
   model_id: amazon.titan-text-express-v1
   provider: Amazon
-- endpoints: {}
-  inference_types:
+- inference_types:
   - PROVISIONED
   model_id: amazon.titan-text-express-v1:0:8k
   provider: Amazon
@@ -572,13 +557,11 @@ models:
   - ON_DEMAND
   model_id: anthropic.claude-3-haiku-20240307-v1:0
   provider: Anthropic
-- endpoints: {}
-  inference_types:
+- inference_types:
   - PROVISIONED
   model_id: anthropic.claude-3-haiku-20240307-v1:0:200k
   provider: Anthropic
-- endpoints: {}
-  inference_types:
+- inference_types:
   - PROVISIONED
   model_id: anthropic.claude-3-haiku-20240307-v1:0:48k
   provider: Anthropic
@@ -604,16 +587,13 @@ models:
   - INFERENCE_PROFILE
   model_id: anthropic.claude-3-opus-20240229-v1:0
   provider: Anthropic
-- endpoints: {}
-  inference_types: []
+- inference_types: []
   model_id: anthropic.claude-3-opus-20240229-v1:0:12k
   provider: Anthropic
-- endpoints: {}
-  inference_types: []
+- inference_types: []
   model_id: anthropic.claude-3-opus-20240229-v1:0:200k
   provider: Anthropic
-- endpoints: {}
-  inference_types: []
+- inference_types: []
   model_id: anthropic.claude-3-opus-20240229-v1:0:28k
   provider: Anthropic
 - endpoints:
@@ -647,13 +627,11 @@ models:
   - ON_DEMAND
   model_id: anthropic.claude-3-sonnet-20240229-v1:0
   provider: Anthropic
-- endpoints: {}
-  inference_types:
+- inference_types:
   - PROVISIONED
   model_id: anthropic.claude-3-sonnet-20240229-v1:0:200k
   provider: Anthropic
-- endpoints: {}
-  inference_types:
+- inference_types:
   - PROVISIONED
   model_id: anthropic.claude-3-sonnet-20240229-v1:0:28k
   provider: Anthropic
@@ -695,8 +673,7 @@ models:
   - INFERENCE_PROFILE
   model_id: anthropic.claude-haiku-4-5-20251001-v1:0
   provider: Anthropic
-- endpoints: {}
-  inference_types:
+- inference_types:
   - PROVISIONED
   model_id: anthropic.claude-instant-v1:2:100k
   provider: Anthropic
@@ -858,23 +835,19 @@ models:
   - INFERENCE_PROFILE
   model_id: anthropic.claude-sonnet-4-5-20250929-v1:0
   provider: Anthropic
-- endpoints: {}
-  inference_types:
+- inference_types:
   - PROVISIONED
   model_id: anthropic.claude-v2:0:100k
   provider: Anthropic
-- endpoints: {}
-  inference_types:
+- inference_types:
   - PROVISIONED
   model_id: anthropic.claude-v2:0:18k
   provider: Anthropic
-- endpoints: {}
-  inference_types:
+- inference_types:
   - PROVISIONED
   model_id: anthropic.claude-v2:1:18k
   provider: Anthropic
-- endpoints: {}
-  inference_types:
+- inference_types:
   - PROVISIONED
   model_id: anthropic.claude-v2:1:200k
   provider: Anthropic
@@ -913,19 +886,14 @@ models:
     base:
       quotas:
         concurrent: null
-        rpm:
-          code: L-FF8E7864
-          name: On-demand model inference requests per minute for Cohere Embed English
+        rpm: null
         tpd: null
-        tpm:
-          code: L-A2BE277A
-          name: On-demand model inference tokens per minute for Cohere Embed English
+        tpm: null
   inference_types:
   - ON_DEMAND
   model_id: cohere.embed-english-v3
   provider: Cohere
-- endpoints: {}
-  inference_types:
+- inference_types:
   - PROVISIONED
   model_id: cohere.embed-english-v3:0:512
   provider: Cohere
@@ -940,8 +908,7 @@ models:
   - ON_DEMAND
   model_id: cohere.embed-multilingual-v3
   provider: Cohere
-- endpoints: {}
-  inference_types:
+- inference_types:
   - PROVISIONED
   model_id: cohere.embed-multilingual-v3:0:512
   provider: Cohere
@@ -1876,6 +1843,16 @@ models:
   model_id: twelvelabs.marengo-embed-3-0-v1:0
   provider: TwelveLabs
 - endpoints:
+    base:
+      quotas:
+        concurrent:
+          code: L-CABD464E
+          name: On-demand InvokeModel concurrent requests for Twelve Labs Pegasus
+        rpm:
+          code: L-5E8692C5
+          name: On-demand model inference requests per minute for Twelve Labs Pegasus
+        tpd: null
+        tpm: null
     us:
       quotas:
         concurrent: null

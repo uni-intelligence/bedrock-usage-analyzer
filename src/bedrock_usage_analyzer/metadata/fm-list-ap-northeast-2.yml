@@ -192,8 +192,7 @@ models:
   - ON_DEMAND
   model_id: anthropic.claude-3-haiku-20240307-v1:0
   provider: Anthropic
-- endpoints: {}
-  inference_types: []
+- inference_types: []
   model_id: anthropic.claude-3-haiku-20240307-v1:0:200k
   provider: Anthropic
 - endpoints:
@@ -215,12 +214,10 @@ models:
   - INFERENCE_PROFILE
   model_id: anthropic.claude-3-sonnet-20240229-v1:0
   provider: Anthropic
-- endpoints: {}
-  inference_types: []
+- inference_types: []
   model_id: anthropic.claude-3-sonnet-20240229-v1:0:200k
   provider: Anthropic
-- endpoints: {}
-  inference_types: []
+- inference_types: []
   model_id: anthropic.claude-3-sonnet-20240229-v1:0:28k
   provider: Anthropic
 - endpoints:
@@ -372,6 +369,16 @@ models:
         rpm:
           code: L-6E046197
           name: Cross-region model inference requests per minute for Twelve Labs Pegasus
+        tpd: null
+        tpm: null
+    base:
+      quotas:
+        concurrent:
+          code: L-CABD464E
+          name: On-demand InvokeModel concurrent requests for Twelve Labs Pegasus
+        rpm:
+          code: L-5E8692C5
+          name: On-demand model inference requests per minute for Twelve Labs Pegasus
         tpd: null
         tpm: null
   inference_profiles:
