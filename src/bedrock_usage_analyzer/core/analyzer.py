@@ -16,6 +16,7 @@ from bedrock_usage_analyzer.core.profile_fetcher import InferenceProfileFetcher
 from bedrock_usage_analyzer.core.metrics_fetcher import CloudWatchMetricsFetcher
 from bedrock_usage_analyzer.core.output_generator import OutputGenerator
 from bedrock_usage_analyzer.aws.bedrock import get_regional_profile_prefixes
+from bedrock_usage_analyzer.utils.paths import get_data_path
 
 logger = logging.getLogger(__name__)
 
@@ -41,7 +42,7 @@ class BedrockAnalyzer:
         self.sq_client = boto3.client('service-quotas', region_name=region)
         self.profile_fetcher = InferenceProfileFetcher(self.bedrock_client)
         self.metrics_fetcher = CloudWatchMetricsFetcher(self.cloudwatch_client, self.tz_api_format)
-        self.output_generator = OutputGenerator()
+        self.output_generator = None  # Initialized in analyze() with output_dir
     
     def _load_quota_codes(self, model_id, profile_prefix=None):
         """Load quota codes for a model from FM list based on endpoint
@@ -53,9 +54,9 @@ class BedrockAnalyzer:
         Returns:
             dict: Quota codes for the specified endpoint (tpm, rpm, tpd, concurrent)
         """
-        fm_file = f'metadata/fm-list-{self.region}.yml'
-        
-        if not os.path.exists(fm_file):
+        try:
+            fm_file = get_data_path(f'fm-list-{self.region}.yml')
+        except FileNotFoundError:
             return {}
         
         with open(fm_file, 'r', encoding='utf-8') as f:
@@ -191,8 +192,14 @@ class BedrockAnalyzer:
         
         return contributions
     
-    def analyze(self, models):
-        """Analyze token usage for given models"""
+    def analyze(self, models, output_dir: str = 'results'):
+        """Analyze token usage for given models
+        
+        Args:
+            models: List of model configurations
+            output_dir: Directory to save results
+        """
+        self.output_generator = OutputGenerator(output_dir)
         
         # Step 0: Discover all profiles once for all models
         logger.info(f"\n{'='*80}")

@@ -22,7 +22,7 @@ else
 fi
 
 # Run the Python module with all arguments
-python -m bedrock_usage_analyzer.cli.refresh fm-quotas "$@"
+python -m bedrock_usage_analyzer refresh fm-quotas "$@"
 
 # Deactivate virtual environment
 deactivate

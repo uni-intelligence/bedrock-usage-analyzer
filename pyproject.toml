@@ -20,10 +20,15 @@ dependencies = [
     "jinja2",
     "pyyaml",
     "defusedcsv",
+    "platformdirs",
 ]
 
 [project.urls]
 Repository = "https://github.com/awslabs/bedrock-usage-analyzer"
+
+[project.scripts]
+bua = "bedrock_usage_analyzer.__main__:main"
+bedrock-usage-analyzer = "bedrock_usage_analyzer.__main__:main"
 
 [tool.setuptools]
 package-dir = {"" = "src"}
@@ -32,4 +37,4 @@ package-dir = {"" = "src"}
 where = ["src"]
 
 [tool.setuptools.package-data]
-bedrock_usage_analyzer = ["templates/*.html"]
+bedrock_usage_analyzer = ["templates/*.html", "metadata/*.yml", "metadata/*.csv"]

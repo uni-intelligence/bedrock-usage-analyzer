@@ -27,4 +27,4 @@ fi
 cd "$PROJECT_ROOT"
 
 # Run the regions refresh command
-python -m bedrock_usage_analyzer.cli.refresh regions
+python -m bedrock_usage_analyzer refresh regions "$@"

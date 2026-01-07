@@ -10,6 +10,7 @@ import boto3
 
 from ..utils.yaml_handler import load_yaml
 from ..utils.ui import select_from_list
+from ..utils.paths import get_data_path
 
 logger = logging.getLogger(__name__)
 
@@ -263,11 +264,11 @@ class UserInputs:
     
     def _load_regions(self):
         """Load regions from yml, refresh if needed"""
-        regions_file = 'metadata/regions.yml'
-        
-        if not os.path.exists(regions_file) or os.path.getsize(regions_file) == 0:
-            logger.error("Regions list not found: metadata/regions.yml")
-            logger.error("Please run: ./bin/refresh-regions")
+        try:
+            regions_file = get_data_path('regions.yml')
+        except FileNotFoundError:
+            logger.error("Regions list not found")
+            logger.error("Please run: ./bin/refresh-regions or python -m bedrock_usage_analyzer.cli.refresh regions")
             sys.exit(1)
         
         data = load_yaml(regions_file)
@@ -279,16 +280,42 @@ class UserInputs:
         if not region or not all(c.isalnum() or c == '-' for c in region):
             raise ValueError(f"Invalid region format: {region}")
         
-        fm_file = f'metadata/fm-list-{region}.yml'
-        
-        if not os.path.exists(fm_file) or os.path.getsize(fm_file) == 0:
-            logger.error(f"Foundation model list not found: {fm_file}")
+        try:
+            get_data_path(f'fm-list-{region}.yml')
+        except FileNotFoundError:
+            logger.error(f"Foundation model list not found for region: {region}")
             logger.error(f"Please run: ./bin/refresh-fm-list {region}")
             sys.exit(1)
     
     def _load_fm_list(self, region):
         """Load foundation models for region"""
-        fm_file = f'metadata/fm-list-{region}.yml'
+        fm_file = get_data_path(f'fm-list-{region}.yml')
         
         data = load_yaml(fm_file)
         return data.get('models', [])
+    
+    def select_output_dir(self) -> str:
+        """Prompt user to select output directory for results."""
+        from ..utils.paths import get_default_results_dir
+        
+        current_dir = "./results"
+        user_data_dir = str(get_default_results_dir())
+        
+        print("\nWhere to save results?")
+        print(f"  [1] Current directory ({current_dir})")
+        print(f"  [2] User data directory ({user_data_dir})")
+        print("  [3] Custom location")
+        
+        while True:
+            choice = input("\nEnter choice [1]: ").strip()
+            if choice == "" or choice == "1":
+                return current_dir
+            elif choice == "2":
+                return user_data_dir
+            elif choice == "3":
+                custom_path = input("Enter custom path: ").strip()
+                if custom_path:
+                    return custom_path
+                print("Please enter a valid path")
+            else:
+                print("Please enter 1, 2, or 3")

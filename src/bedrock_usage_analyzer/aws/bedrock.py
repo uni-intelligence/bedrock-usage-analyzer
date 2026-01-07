@@ -28,26 +28,26 @@ def _load_prefix_mapping() -> List[Dict]:
         List of prefix mapping dictionaries
         
     Raises:
-        FileNotFoundError: If metadata/prefix-mapping.yml doesn't exist
+        FileNotFoundError: If prefix-mapping.yml doesn't exist
     """
     global _prefix_mapping_cache
     
     if _prefix_mapping_cache is not None:
         return _prefix_mapping_cache
     
-    metadata_file = 'metadata/prefix-mapping.yml'
+    from bedrock_usage_analyzer.utils.yaml_handler import load_yaml
+    from bedrock_usage_analyzer.utils.paths import get_data_path
     
-    if os.path.exists(metadata_file):
-        from bedrock_usage_analyzer.utils.yaml_handler import load_yaml
+    try:
+        metadata_file = get_data_path('prefix-mapping.yml')
         data = load_yaml(metadata_file)
         _prefix_mapping_cache = data.get('prefixes', [])
         return _prefix_mapping_cache
-    else:
-        # File missing - error out and ask user to refresh
+    except FileNotFoundError:
         raise FileNotFoundError(
-            f"\n{metadata_file} not found!\n"
-            f"Please run: ./bin/refresh-fm-list\n"
-            f"This will refresh both foundation model lists and prefix mapping."
+            "\nprefix-mapping.yml not found!\n"
+            "Please run: ./bin/refresh-fm-list\n"
+            "This will refresh both foundation model lists and prefix mapping."
         )
 
 

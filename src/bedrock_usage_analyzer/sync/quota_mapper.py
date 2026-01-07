@@ -9,6 +9,7 @@ import sys
 from typing import Dict, List, Optional
 
 from bedrock_usage_analyzer.utils.yaml_handler import load_yaml, save_yaml
+from bedrock_usage_analyzer.utils.paths import get_data_path, get_writable_path, get_bundle_path
 from bedrock_usage_analyzer.aws.servicequotas import fetch_service_quotas
 from bedrock_usage_analyzer.aws.bedrock_llm import extract_common_name, extract_quota_codes
 from bedrock_usage_analyzer.aws.bedrock import get_endpoint_quota_keywords
@@ -33,8 +34,13 @@ class QuotaMapper:
         self.common_name_cache = {}
         self.lcode_cache = {}
         
-    def run(self):
-        """Execute quota mapping for all regions"""
+    def run(self, update_bundle: bool = False):
+        """Execute quota mapping for all regions
+        
+        Args:
+            update_bundle: Also update bundled metadata (for maintainers)
+        """
+        self.update_bundle = update_bundle
         logger.info(f"Using model: {self.model_id}")
         logger.info(f"Bedrock region: {self.bedrock_region}")
         if self.target_region:
@@ -48,7 +54,8 @@ class QuotaMapper:
     
     def _get_regions_to_process(self) -> List[str]:
         """Get list of regions to process"""
-        regions_data = load_yaml('metadata/regions.yml')
+        regions_file = get_data_path('regions.yml')
+        regions_data = load_yaml(regions_file)
         all_regions = regions_data.get('regions', [])
         
         if self.target_region:
@@ -179,11 +186,22 @@ class QuotaMapper:
     def _load_fm_list(self, region: str) -> Optional[List[Dict]]:
         """Load FM list for region"""
         try:
-            data = load_yaml(f'metadata/fm-list-{region}.yml')
+            fm_file = get_data_path(f'fm-list-{region}.yml')
+            data = load_yaml(fm_file)
             return data.get('models', [])
         except Exception:
             return None
     
     def _save_fm_list(self, region: str, fm_list: List[Dict]):
         """Save FM list for region"""
-        save_yaml(f'metadata/fm-list-{region}.yml', {'models': fm_list})
+        output_file = get_writable_path(f'fm-list-{region}.yml')
+        data = {'models': fm_list}
+        save_yaml(str(output_file), data)
+        logger.info(f"  ✓ Saved: {output_file}")
+        
+        if getattr(self, 'update_bundle', False):
+            bundle_path = get_bundle_path()
+            if bundle_path:
+                bundle_file = bundle_path / f'fm-list-{region}.yml'
+                save_yaml(str(bundle_file), data)
+                logger.info(f"  ✓ Saved: {bundle_file} (bundled)")

@@ -22,7 +22,7 @@ else
 fi
 
 # Run the Python module
-python -m bedrock_usage_analyzer.cli.analyze "$@"
+python -m bedrock_usage_analyzer analyze "$@"
 
 # Deactivate virtual environment
 deactivate

@@ -10,6 +10,7 @@ import sys
 
 from bedrock_usage_analyzer.utils.yaml_handler import load_yaml, save_yaml
 from bedrock_usage_analyzer.utils.csv_handler import write_csv
+from bedrock_usage_analyzer.utils.paths import list_data_files, get_writable_path, get_bundle_path
 from bedrock_usage_analyzer.aws.servicequotas import get_quota_details
 
 logger = logging.getLogger(__name__)
@@ -23,8 +24,13 @@ class QuotaIndexGenerator:
         self.entries = []
         self.error_entries = []
     
-    def run(self):
-        """Execute quota index generation"""
+    def run(self, update_bundle: bool = False):
+        """Execute quota index generation
+        
+        Args:
+            update_bundle: Also update bundled metadata (for maintainers)
+        """
+        self.update_bundle = update_bundle
         logger.info("Generating quota index for validation...\n")
         
         self._load_all_models()
@@ -34,21 +40,23 @@ class QuotaIndexGenerator:
         self._generate_csv()
         
         logger.info("\nQuota index generation complete!")
-        logger.info("Review metadata/quota-index.csv to validate quota mappings")
+        logger.info("Review quota-index.csv to validate quota mappings")
     
     def _load_all_models(self):
         """Load all FM list files and merge endpoints from all regions"""
-        fm_files = glob.glob('metadata/fm-list-*.yml')
+        fm_files = list_data_files('fm-list-*.yml')
         
         if not fm_files:
-            logger.error("No fm-list files found in metadata/")
+            logger.error("No fm-list files found")
             sys.exit(1)
         
         logger.info(f"Found {len(fm_files)} fm-list files")
         
         for fm_file in fm_files:
-            region = fm_file.replace('metadata/fm-list-', '').replace('.yml', '')
-            data = load_yaml(fm_file)
+            # Extract region from filename
+            filename = fm_file.name if hasattr(fm_file, 'name') else str(fm_file)
+            region = filename.replace('fm-list-', '').replace('.yml', '')
+            data = load_yaml(str(fm_file))
             
             for model in data.get('models', []):
                 model_id = model['model_id']
@@ -177,8 +185,8 @@ class QuotaIndexGenerator:
     
     def _cleanup_region_errors(self, region: str, entries: List[Dict]):
         """Clean up errors for a specific region"""
-        yaml_file = f'metadata/fm-list-{region}.yml'
-        data = load_yaml(yaml_file)
+        yaml_file = get_writable_path(f'fm-list-{region}.yml')
+        data = load_yaml(str(yaml_file))
         
         modified = False
         for entry in entries:
@@ -196,8 +204,15 @@ class QuotaIndexGenerator:
                                 modified = True
         
         if modified:
-            save_yaml(yaml_file, data)
+            save_yaml(str(yaml_file), data)
             logger.info(f"  ✓ Updated {yaml_file}")
+            
+            if getattr(self, 'update_bundle', False):
+                bundle_path = get_bundle_path()
+                if bundle_path:
+                    bundle_file = bundle_path / f'fm-list-{region}.yml'
+                    save_yaml(str(bundle_file), data)
+                    logger.info(f"  ✓ Updated {bundle_file} (bundled)")
     
     def _generate_csv(self):
         """Generate CSV file with valid entries"""
@@ -206,13 +221,25 @@ class QuotaIndexGenerator:
             for e in self.entries if e.get('quota_name') != 'ERROR'
         ]
         
+        output_file = get_writable_path('quota-index.csv')
         write_csv(
-            'metadata/quota-index.csv',
+            str(output_file),
             ['model_id', 'endpoint', 'quota_type', 'quota_code', 'quota_name'],
             valid_rows
         )
+        logger.info(f"\n✓ Generated {output_file} with {len(valid_rows)} valid entries")
         
-        logger.info(f"\n✓ Generated metadata/quota-index.csv with {len(valid_rows)} valid entries")
+        if getattr(self, 'update_bundle', False):
+            bundle_path = get_bundle_path()
+            if bundle_path:
+                bundle_file = bundle_path / 'quota-index.csv'
+                write_csv(
+                    str(bundle_file),
+                    ['model_id', 'endpoint', 'quota_type', 'quota_code', 'quota_name'],
+                    valid_rows
+                )
+                logger.info(f"✓ Generated {bundle_file} (bundled)")
+        
         if self.error_entries:
             logger.info(f"✓ Cleaned up {len(self.error_entries)} ERROR entries from YAML files")
 

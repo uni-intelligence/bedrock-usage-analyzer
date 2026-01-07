@@ -14,8 +14,8 @@ logger = logging.getLogger(__name__)
 class OutputGenerator:
     """Handles JSON and HTML output generation"""
     
-    def __init__(self):
-        self.output_dir = 'results'
+    def __init__(self, output_dir: str = 'results'):
+        self.output_dir = output_dir
         os.makedirs(self.output_dir, exist_ok=True)
     
     def generate(self, results):

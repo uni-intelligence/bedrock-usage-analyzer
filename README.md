@@ -11,9 +11,9 @@ This CLI tool can help answers:
 4. When did the throttling occur for this model and which project/application contributed the most for that?
 5. How far is my current TPM against the quota?
 
-This tool works by calling AWS APIs from your local machine, including CloudWatch [Get Metric Data](https://docs.aws.amazon.com/AmazonCloudWatch/latest/APIReference/API_GetMetricData.html) and Bedrock [List Inference Profiles](https://docs.aws.amazon.com/bedrock/latest/APIReference/API_ListInferenceProfiles.html). It then generates a JSON and HTML output file per model/system inference profile being analyzed inside `results` folder. The tool uses metadata files in `metadata` folder to obtain the list of available regions and FMs and to map each FM into the AWS service quotas L code (L-xxx). 
+This tool works by calling AWS APIs from your local machine, including CloudWatch [Get Metric Data](https://docs.aws.amazon.com/AmazonCloudWatch/latest/APIReference/API_GetMetricData.html) and Bedrock [List Inference Profiles](https://docs.aws.amazon.com/bedrock/latest/APIReference/API_ListInferenceProfiles.html). It then generates a JSON and HTML output file per model/system inference profile being analyzed inside `results` folder. The tool uses bundled metadata files to obtain the list of available regions and FMs and to map each FM into the AWS service quotas L code (L-xxx). 
 
-You can refresh the available regions, the available foundation models, and the service quotas mapping for the FMs using the scripts in `bin` folder. The FM to service quotas mapping is done intelligently with the help of foundation model called through Bedrock.
+You can refresh the available regions, the available foundation models, and the service quotas mapping for the FMs using the `bua refresh` commands. The FM to service quotas mapping is done intelligently with the help of foundation model called through Bedrock.
 
 ⚠️ **Important Disclaimer** This tool is currently under 0.3.0-beta version. Before using this tool in any production or critical environment, you are strongly advised to review all code thoroughly and evaluate it against best practices, security and compliance standards, and other requirements.
 
@@ -51,7 +51,7 @@ This tool requires different IAM permissions depending on which features you use
 
 #### Option 1: Usage Analysis Only (Lightweight)
 
-**Use this if:** You only run `./bin/analyze-bedrock-usage` to analyze token usage.
+**Use this if:** You only run `bua analyze` (or `./bin/analyze-bedrock-usage`) to analyze token usage.
 
 ```json
 {
@@ -80,11 +80,11 @@ This tool requires different IAM permissions depending on which features you use
 - `cloudwatch:GetMetricData` - Fetch CloudWatch metrics for token usage (TPM, RPM, TPD, throttles)
 - `servicequotas:GetServiceQuota` - Retrieve service quota limits for visualization
 
-**Note:** This option assumes you already have metadata files (`metadata/fm-list-*.yml`)
+**Note:** This option uses the bundled metadata files that come with the package.
 
 #### Option 2: Full Feature Access (Complete)
 
-**Use this if:** You run metadata refresh scripts (`./bin/refresh-*`) or test data generators. This includes **all permissions from Option 1** plus additional permissions:
+**Use this if:** You run metadata refresh commands (`bua refresh *`) or test data generators. This includes **all permissions from Option 1** plus additional permissions:
 
 Note: You need to replace some part with your own account ID and the region used.
 
@@ -132,10 +132,10 @@ Note: You need to replace some part with your own account ID and the region used
 ```
 
 **Additional permissions explained:**
-- `account:ListRegions` - List enabled AWS regions (for `bin/refresh-regions`)
-- `bedrock:ListFoundationModels` - List all foundation models (for `bin/refresh-fm-list`)
-- `servicequotas:ListServiceQuotas` - List all Bedrock quotas (for `bin/refresh-fm-quotas-mapping` and `bin/refresh-quota-index`)
-- `bedrock:InvokeModel` - Invoke Claude models for intelligent quota mapping (for `bin/refresh-fm-quotas-mapping` only, restricted to Claude models)
+- `account:ListRegions` - List enabled AWS regions (for `bua refresh regions`)
+- `bedrock:ListFoundationModels` - List all foundation models (for `bua refresh fm-list`)
+- `servicequotas:ListServiceQuotas` - List all Bedrock quotas (for `bua refresh fm-quotas` and `bua refresh quota-index`)
+- `bedrock:InvokeModel` - Invoke Claude models for intelligent quota mapping (for `bua refresh fm-quotas` only, restricted to Claude models)
 
 #### Security Best Practices
 
@@ -154,7 +154,10 @@ You can install it in three ways:
 pip install bedrock-usage-analyzer
 
 # Run the analyzer
-python -m bedrock_usage_analyzer.cli.analyze
+bua analyze
+
+# Or use the full command
+bedrock-usage-analyzer analyze
 ```
 
 #### Option 2: Editable Install (For Development)
@@ -165,6 +168,9 @@ cd bedrock-usage-analyzer
 
 # Install in editable mode
 pip install -e .
+
+# Run using the CLI
+bua analyze
 ```
 
 #### Option 3: Using the bin scripts (Auto-setup)
@@ -177,7 +183,7 @@ cd bedrock-usage-analyzer
 ./bin/analyze-bedrock-usage
 
 # Windows (without bash): Run Python module directly
-python -m bedrock_usage_analyzer.cli.analyze
+python -m bedrock_usage_analyzer analyze
 ```
 
 ### Step 2: Configure AWS Credentials
@@ -195,16 +201,16 @@ Before analyzing usage, you may want to refresh the foundation model lists:
 
 ```bash
 # Refresh regions list
-./bin/refresh-regions
-# Windows: python -m bedrock_usage_analyzer.cli.refresh regions
+bua refresh regions
+# Or: ./bin/refresh-regions
 
 # Refresh foundation models for all regions
-./bin/refresh-fm-list
-# Windows: python -m bedrock_usage_analyzer.cli.refresh fm-list
+bua refresh fm-list
+# Or: ./bin/refresh-fm-list
 
 # Or refresh for a specific region
-./bin/refresh-fm-list us-west-2
-# Windows: python -m bedrock_usage_analyzer.cli.refresh fm-list us-west-2
+bua refresh fm-list us-west-2
+# Or: ./bin/refresh-fm-list us-west-2
 ```
 
 This step is optional because this repository comes with preloaded metadata that contains these information. However, you might want to refresh those metadata since new regions, new foundation models, or new quotas for the FMs might have come since this repository was refreshed.
@@ -213,8 +219,8 @@ This step is optional because this repository comes with preloaded metadata that
 
 ```bash
 # Launch the interactive usage analyzer
-./bin/analyze-bedrock-usage
-# Windows: python -m bedrock_usage_analyzer.cli.analyze
+bua analyze
+# Or: ./bin/analyze-bedrock-usage
 ```
 
 The script will prompt you to:
@@ -290,8 +296,8 @@ The tool can automatically map AWS Service Quotas to foundation models:
 
 ```bash
 # Run the quota mapping tool
-./bin/refresh-fm-quotas-mapping
-# Windows: python -m bedrock_analyzer.cli.refresh fm-quotas
+bua refresh fm-quotas
+# Or: ./bin/refresh-fm-quotas-mapping
 ```
 **How it works:**
 - Uses Bedrock foundation model to extract base model family names (e.g., "nova-lite" → "nova")
@@ -300,15 +306,15 @@ The tool can automatically map AWS Service Quotas to foundation models:
 - Only makes 2-3 inference calls per model profile (on-demand, cross-region, global)
 - Caches results to avoid redundant API calls
 
-You can then validate the mapped quota. To make the validation easier, you can run the following script to create a .csv file where each row constitutes the model, endpoint, and metric combination. 
+You can then validate the mapped quota. To make the validation easier, you can run the following command to create a .csv file where each row constitutes the model, endpoint, and metric combination. 
 
 ```bash
-# Run the quota mapping tool
-./bin/refresh-quota-index
-# Windows: python -m bedrock_analyzer.cli.refresh quota-index
+# Generate quota index CSV
+bua refresh quota-index
+# Or: ./bin/refresh-quota-index
 ```
 
-It will be saved in ./metadata/quota-index.csv. You can then validate the mapping for each row, either manually or with your AI assistant.
+The CSV file will be saved in your user data directory (see [Metadata Storage](#metadata-storage)). You can then validate the mapping for each row, either manually or with your AI assistant.
 
 ### Customizing Analysis
 
@@ -326,26 +332,39 @@ The analyzer supports various customization options through the interactive prom
 - 14days: Bi-weekly patterns
 - 30days: Monthly trends
 
-## Available Scripts
+## Available Commands
 
-### Core Analysis
+### CLI Commands (after pip install)
+
+```bash
+# Main analysis
+bua analyze
+
+# Refresh metadata
+bua refresh regions              # Refresh AWS regions list
+bua refresh fm-list              # Refresh FM lists for all regions
+bua refresh fm-list us-west-2    # Refresh FM list for specific region
+bua refresh fm-quotas            # Refresh quota mappings (interactive)
+bua refresh quota-index          # Generate quota index CSV
+
+# For maintainers: also update bundled metadata
+bua refresh regions --update-bundle
+bua refresh fm-list --update-bundle
+```
+
+### Bin Scripts (for git clone users)
 
 **`./bin/analyze-bedrock-usage`**
 - Main script for analyzing token usage
 - Interactive prompts for region, provider, model selection
 - Generates JSON and HTML reports in `results/` directory
-- Auto-refreshes foundation model lists if needed
-
-### Metadata Management
 
 **`./bin/refresh-regions`**
 - Fetches enabled AWS regions for your account
-- Saves to `metadata/regions.yml`
 - Run when you enable new regions
 
 **`./bin/refresh-fm-list [region]`**
 - Fetches foundation models and inference profiles
-- Saves to `metadata/fm-list-{region}.yml`
 - Run without argument to refresh all regions
 - Run with region argument to refresh specific region
 - Preserves existing quota mappings
@@ -368,6 +387,33 @@ The analyzer supports various customization options through the interactive prom
 **`./bin/refresh-quota-index`**
 - Generates CSV index of all quota mappings for validation
 
+## Metadata Storage
+
+The tool uses metadata files (regions, FM lists, quota mappings) from these locations:
+
+### Default Locations (via platformdirs)
+| OS | Path |
+|----|------|
+| Linux | `~/.local/share/bedrock-usage-analyzer/` |
+| macOS | `~/Library/Application Support/bedrock-usage-analyzer/` |
+| Windows | `%LOCALAPPDATA%\bedrock-usage-analyzer\` |
+
+### Custom Location
+Set the `BEDROCK_ANALYZER_DATA_DIR` environment variable:
+```bash
+export BEDROCK_ANALYZER_DATA_DIR=/path/to/custom/location
+```
+
+### Reset to Defaults
+Delete the user data directory to revert to bundled defaults:
+```bash
+# Linux
+rm -rf ~/.local/share/bedrock-usage-analyzer/
+
+# macOS
+rm -rf ~/Library/Application\ Support/bedrock-usage-analyzer/
+```
+
 ## Troubleshooting and advanced scenarios
 ### Analysis Issues
 
@@ -379,17 +425,16 @@ A: This means CloudWatch has no data for the selected model. Verify:
 
 **Q: Quota limits not showing in report**
 A: Quotas are only shown if they've been mapped. You can:
-1. Manually edit quota mappings in `metadata/fm-list-{region}.yml`, or
-2. Re-run the `./bin/refresh-fm-quotas-mapping`.
+1. Manually edit quota mappings in the user data directory, or
+2. Re-run `bua refresh fm-quotas`.
 
-If the quota limits are still not shown, it could be that the FM is not yet listed. You can run `./bin/refresh-fm-list` before `./bin/refresh-fm-quotas-mapping`.
+If the quota limits are still not shown, it could be that the FM is not yet listed. You can run `bua refresh fm-list` before `bua refresh fm-quotas`.
 
 
 **Q: "Model not found" error**
 A: Refresh your foundation model lists:
 ```bash
-./bin/refresh-fm-list
-# Windows: python -m bedrock_analyzer.cli.refresh fm-list
+bua refresh fm-list
 ```
 
 ### Quota Mapping Issues
@@ -410,8 +455,8 @@ A: This can happen if:
 
 **Q: "AccessDenied" errors**
 A: Verify your IAM permissions. See the [IAM Permissions](#iam-permissions) section for detailed permission requirements. Use:
-- **Option 1** if you only run `./bin/analyze-bedrock-usage`
-- **Option 2** if you also run metadata refresh scripts
+- **Option 1** if you only run `bua analyze`
+- **Option 2** if you also run `bua refresh` commands
 
 ### Performance Issues
 
@@ -423,24 +468,27 @@ A: CloudWatch queries can take time for large time ranges. To speed up:
 
 ### Advanced scenarios
 
-**Q: How do I swith to different AWS accounts when using this tool**
-A: You can use different AWS profile as shown in the following code snippet
-`AWS_PROFILE=<YOUR AWS PROFILE NAME> ./bin/analyze-bedrock-usage`
+**Q: How do I switch to different AWS accounts when using this tool?**
+A: You can use different AWS profile as shown in the following code snippet:
+```bash
+AWS_PROFILE=<YOUR AWS PROFILE NAME> bua analyze
+# Or: AWS_PROFILE=<YOUR AWS PROFILE NAME> ./bin/analyze-bedrock-usage
+```
 
 ## Security Considerations
 
 - **Credentials**: Never commit AWS credentials to the repository
 - **Quota Data**: Quota information is fetched from AWS and not hardcoded
 - **API Calls**: All Bedrock API calls use your AWS credentials
-- **Data Storage**: All data is stored locally in `metadata/` and `results/`
+- **Data Storage**: Analysis results are stored locally in `results/`. Refreshed metadata is stored in your user data directory (see [Metadata Storage](#metadata-storage))
 
 ## Cost Considerations
-When using `./bin/analyze-bedrock-usage`, the following cost is expected:
+When using `bua analyze` (or `./bin/analyze-bedrock-usage`), the following cost is expected:
 - CloudWatch GetMetricData that is measured on the number of metrics requested
   - Refer to [CloudWatch pricing page](https://aws.amazon.com/cloudwatch/pricing/) to view the unit price per region.
   - The total cost of this component depends on the number of metrics being requested, that also depends on how many FMs are included in the query and how many times this tool is run
 
-When FM quotas mapping (`./bin/refresh-fm-quotas-mapping`) to refresh the mapping between FM metric and the quotas, the following additional cost will apply:
+When running `bua refresh fm-quotas` (or `./bin/refresh-fm-quotas-mapping`) to refresh the mapping between FM metric and the quotas, the following additional cost will apply:
 - Bedrock model invocation cost that is based on the total tokens used.
   -  This is because this functionality invokes FM in Bedrock to intelligently perform the mapping. 
   -  Refer to [Bedrock pricing page](https://aws.amazon.com/bedrock/pricing/)

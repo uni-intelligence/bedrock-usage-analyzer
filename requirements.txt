@@ -3,3 +3,4 @@ numpy
 jinja2
 pyyaml
 defusedcsv
+platformdirs

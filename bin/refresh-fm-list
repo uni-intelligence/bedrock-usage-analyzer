@@ -27,8 +27,4 @@ fi
 cd "$PROJECT_ROOT"
 
 # Run the fm-list refresh command with optional region argument
-if [ -n "$1" ]; then
-    python -m bedrock_usage_analyzer.cli.refresh fm-list "$1"
-else
-    python -m bedrock_usage_analyzer.cli.refresh fm-list
-fi
+python -m bedrock_usage_analyzer refresh fm-list "$@"

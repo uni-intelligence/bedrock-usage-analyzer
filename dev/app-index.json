@@ -1,24 +1,17 @@
 {
   "name": "Bedrock Usage Analyzer",
-  "version": "0.2.1-beta",
+  "version": "0.3.0-beta",
   "description": "CLI tool to calculate token usage statistics (TPM, RPM, TPD, p50, p90) for Amazon Bedrock foundation models, with quota visualization and application inference profile aggregation across CloudWatch metrics",
-  "technologies": ["Python", "Bash", "boto3", "numpy", "jinja2", "pyyaml", "defusedcsv", "Chart.js"],
+  "technologies": ["Python", "Bash", "boto3", "numpy", "jinja2", "pyyaml", "defusedcsv", "platformdirs", "Chart.js"],
   "structure": {
     "src/bedrock_usage_analyzer/": "Main Python package containing all source code",
     "src/bedrock_usage_analyzer/core/": "Core analysis logic - orchestrator, metrics fetching, output generation",
     "src/bedrock_usage_analyzer/aws/": "AWS service integrations - Bedrock, CloudWatch, Service Quotas, STS",
-    "src/bedrock_usage_analyzer/utils/": "Utility functions - CSV, YAML, UI helpers",
-    "src/bedrock_usage_analyzer/metadata/": "Metadata management - regions, FM lists, quota mapping",
-    "src/bedrock_usage_analyzer/cli/": "CLI entry points - analyze and refresh commands",
+    "src/bedrock_usage_analyzer/utils/": "Utility functions - CSV, YAML, UI helpers, path resolution with platformdirs",
+    "src/bedrock_usage_analyzer/sync/": "Metadata sync/refresh code - regions, FM lists, quota mapping",
     "src/bedrock_usage_analyzer/templates/": "Jinja2 HTML templates for report generation",
+    "src/bedrock_usage_analyzer/metadata/": "Bundled metadata files (regions, FM lists, prefix mapping) - read-only defaults",
     "bin/": "Bash wrapper scripts that auto-setup venv and invoke Python modules",
-    "metadata/": {
-      "description": "Data files for regions, foundation models, and quota mappings",
-      "regions.yml": "List of enabled AWS regions for the account",
-      "fm-list-<region>.yml": "Foundation model lists per region with endpoints and quota mappings",
-      "prefix-mapping.yml": "Mapping of inference profile prefixes to quota keywords",
-      "quota-index.csv": "CSV index of all quota mappings for validation"
-    },
     "results/": "Output directory for generated JSON and HTML reports (gitignored)",
     "assets/": "Screenshot images (image1.png, image2.png, image3.png) for README documentation",
     "dev/": "Development files including app-index.json and temporary files"
@@ -245,24 +238,24 @@
       "imports_files": []
     },
     {
-      "path": "src/bedrock_usage_analyzer/metadata/__init__.py",
-      "summary": "Empty package initialization for metadata module",
+      "path": "src/bedrock_usage_analyzer/sync/__init__.py",
+      "summary": "Empty package initialization for sync module",
       "imports_libraries": [],
       "imports_files": []
     },
     {
-      "path": "src/bedrock_usage_analyzer/metadata/regions.py",
-      "summary": "AWS regions management - fetch enabled regions and save to metadata file",
+      "path": "src/bedrock_usage_analyzer/sync/regions.py",
+      "summary": "AWS regions management - fetch enabled regions",
       "methods": [
         {"name": "fetch_enabled_regions", "description": "Fetch enabled AWS regions for the account via account:ListRegions"},
-        {"name": "refresh_regions", "description": "Refresh the regions list and save to metadata/regions.yml"},
+        {"name": "refresh_regions", "description": "Refresh the regions list and return data dict"},
         {"name": "main", "description": "Entry point for standalone execution"}
       ],
       "imports_libraries": ["boto3", "logging", "typing", "sys"],
-      "imports_files": ["bedrock_usage_analyzer.utils.yaml_handler"]
+      "imports_files": ["bedrock_usage_analyzer.utils.yaml_handler", "bedrock_usage_analyzer.utils.paths"]
     },
     {
-      "path": "src/bedrock_usage_analyzer/metadata/fm_list.py",
+      "path": "src/bedrock_usage_analyzer/sync/fm_list.py",
       "summary": "Foundation model list management - refresh FM lists per region with inference profile mapping",
       "methods": [
         {"name": "load_existing_models", "description": "Load existing models from YAML file to preserve quota mappings"},
@@ -271,10 +264,10 @@
         {"name": "refresh_all_regions", "description": "Refresh foundation models for all regions"}
       ],
       "imports_libraries": ["os", "logging", "typing"],
-      "imports_files": ["bedrock_usage_analyzer.utils.yaml_handler", "bedrock_usage_analyzer.aws.bedrock"]
+      "imports_files": ["bedrock_usage_analyzer.utils.yaml_handler", "bedrock_usage_analyzer.utils.paths", "bedrock_usage_analyzer.aws.bedrock"]
     },
     {
-      "path": "src/bedrock_usage_analyzer/metadata/quota_mapper.py",
+      "path": "src/bedrock_usage_analyzer/sync/quota_mapper.py",
       "summary": "Foundation model quota mapping using Bedrock LLM - intelligently maps FMs to their service quotas",
       "classes": [
         {
@@ -284,7 +277,7 @@
       ],
       "methods": [
         {"name": "__init__", "description": "Initialize quota mapper with Bedrock region, model ID, and optional target region"},
-        {"name": "run", "description": "Execute quota mapping for all regions"},
+        {"name": "run", "description": "Execute quota mapping for all regions, supports update_bundle flag"},
         {"name": "_get_regions_to_process", "description": "Get list of regions to process based on target_region filter"},
         {"name": "_process_region", "description": "Process quota mapping for a single region"},
         {"name": "_get_endpoints_to_process", "description": "Determine which endpoints to process for a model"},
@@ -292,13 +285,13 @@
         {"name": "_find_matching_quotas", "description": "Find quotas matching the common name and endpoint type via keyword search"},
         {"name": "_get_common_name", "description": "Get common name for model with caching"},
         {"name": "_load_fm_list", "description": "Load FM list for region"},
-        {"name": "_save_fm_list", "description": "Save FM list for region"}
+        {"name": "_save_fm_list", "description": "Save FM list for region, optionally to bundle"}
       ],
       "imports_libraries": ["logging", "copy", "sys", "typing"],
-      "imports_files": ["bedrock_usage_analyzer.utils.yaml_handler", "bedrock_usage_analyzer.aws.servicequotas", "bedrock_usage_analyzer.aws.bedrock_llm", "bedrock_usage_analyzer.aws.bedrock"]
+      "imports_files": ["bedrock_usage_analyzer.utils.yaml_handler", "bedrock_usage_analyzer.utils.paths", "bedrock_usage_analyzer.aws.servicequotas", "bedrock_usage_analyzer.aws.bedrock_llm", "bedrock_usage_analyzer.aws.bedrock"]
     },
     {
-      "path": "src/bedrock_usage_analyzer/metadata/quota_index.py",
+      "path": "src/bedrock_usage_analyzer/sync/quota_index.py",
       "summary": "Generate quota index CSV for validation - merges quota mappings from all regions and validates against AWS",
       "classes": [
         {
@@ -308,7 +301,7 @@
       ],
       "methods": [
         {"name": "__init__", "description": "Initialize generator with empty models and entries"},
-        {"name": "run", "description": "Execute quota index generation workflow"},
+        {"name": "run", "description": "Execute quota index generation workflow, supports update_bundle flag"},
         {"name": "_load_all_models", "description": "Load all FM list files and merge endpoints from all regions"},
         {"name": "_merge_endpoints", "description": "Merge endpoints from model into existing model entry"},
         {"name": "_extract_quota_entries", "description": "Extract all unique quota mappings from models"},
@@ -319,35 +312,21 @@
         {"name": "main", "description": "Entry point for standalone execution"}
       ],
       "imports_libraries": ["glob", "logging", "typing", "sys"],
-      "imports_files": ["bedrock_usage_analyzer.utils.yaml_handler", "bedrock_usage_analyzer.utils.csv_handler", "bedrock_usage_analyzer.aws.servicequotas"]
+      "imports_files": ["bedrock_usage_analyzer.utils.yaml_handler", "bedrock_usage_analyzer.utils.csv_handler", "bedrock_usage_analyzer.utils.paths", "bedrock_usage_analyzer.aws.servicequotas"]
     },
     {
-      "path": "src/bedrock_usage_analyzer/cli/__init__.py",
-      "summary": "Empty package initialization for cli module",
-      "imports_libraries": [],
-      "imports_files": []
-    },
-    {
-      "path": "src/bedrock_usage_analyzer/cli/analyze.py",
-      "summary": "Main CLI entry point for Bedrock usage analysis - configures logging and runs analysis workflow",
+      "path": "src/bedrock_usage_analyzer/__main__.py",
+      "summary": "Unified CLI entry point - handles analyze and refresh subcommands with argparse",
       "methods": [
-        {"name": "main", "description": "Main entry point - collects user inputs and runs BedrockAnalyzer"}
-      ],
-      "imports_libraries": ["logging", "sys", "traceback"],
-      "imports_files": ["bedrock_usage_analyzer.core.user_inputs", "bedrock_usage_analyzer.core.analyzer"]
-    },
-    {
-      "path": "src/bedrock_usage_analyzer/cli/refresh.py",
-      "summary": "CLI commands for refreshing metadata - regions, FM lists, quota mappings, and quota index",
-      "methods": [
-        {"name": "refresh_regions_command", "description": "Refresh AWS regions list"},
-        {"name": "refresh_fm_list_command", "description": "Refresh foundation model lists for specific or all regions"},
-        {"name": "refresh_quota_mapping_command", "description": "Refresh quota mappings for foundation models using LLM"},
-        {"name": "refresh_quota_index_command", "description": "Generate quota index CSV for validation"},
-        {"name": "main", "description": "Main entry point with argparse subcommands: regions, fm-list, fm-quotas, quota-index"}
+        {"name": "cmd_analyze", "description": "Run usage analysis"},
+        {"name": "cmd_refresh_regions", "description": "Refresh regions list"},
+        {"name": "cmd_refresh_fm_list", "description": "Refresh FM lists"},
+        {"name": "cmd_refresh_fm_quotas", "description": "Refresh quota mappings"},
+        {"name": "cmd_refresh_quota_index", "description": "Generate quota index CSV"},
+        {"name": "main", "description": "Main entry point with argparse subcommands"}
       ],
       "imports_libraries": ["sys", "logging", "traceback", "argparse"],
-      "imports_files": ["bedrock_usage_analyzer.utils.yaml_handler", "bedrock_usage_analyzer.metadata.regions", "bedrock_usage_analyzer.metadata.fm_list", "bedrock_usage_analyzer.metadata.quota_mapper", "bedrock_usage_analyzer.metadata.quota_index", "bedrock_usage_analyzer.utils.ui", "bedrock_usage_analyzer.aws.bedrock"]
+      "imports_files": ["bedrock_usage_analyzer.utils.paths", "bedrock_usage_analyzer.core.user_inputs", "bedrock_usage_analyzer.core.analyzer", "bedrock_usage_analyzer.sync.regions", "bedrock_usage_analyzer.sync.fm_list", "bedrock_usage_analyzer.sync.quota_mapper", "bedrock_usage_analyzer.sync.quota_index"]
     },
     {
       "path": "src/bedrock_usage_analyzer/templates/__init__.py",
@@ -361,7 +340,7 @@
     },
     {
       "path": "bin/analyze-bedrock-usage",
-      "summary": "Bash wrapper script for main analysis - auto-creates venv, installs package, runs bedrock_usage_analyzer.cli.analyze"
+      "summary": "Bash wrapper script for main analysis - auto-creates venv, installs package, runs python -m bedrock_usage_analyzer analyze"
     },
     {
       "path": "bin/refresh-fm-list",

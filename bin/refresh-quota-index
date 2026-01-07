@@ -27,4 +27,4 @@ fi
 cd "$PROJECT_ROOT"
 
 # Run the quota index command
-python -m bedrock_usage_analyzer.cli.refresh quota-index
+python -m bedrock_usage_analyzer refresh quota-index "$@"

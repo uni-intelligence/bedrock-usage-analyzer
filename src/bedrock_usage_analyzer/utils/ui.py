@@ -7,6 +7,7 @@ import sys
 from typing import Tuple
 
 from bedrock_usage_analyzer.utils.yaml_handler import load_yaml
+from bedrock_usage_analyzer.utils.paths import get_data_path
 
 
 def select_from_list(
@@ -76,7 +77,8 @@ def select_quota_mapping_params(target_region: str = None, bedrock_region: str =
         print(f"\n✓ Using target region '{target_region}' as per input")
     
     # Load regions
-    regions_data = load_yaml('metadata/regions.yml')
+    regions_file = get_data_path('regions.yml')
+    regions_data = load_yaml(regions_file)
     all_regions = regions_data.get('regions', [])
     
     # Step 1: Select Bedrock API region (skip if provided)
