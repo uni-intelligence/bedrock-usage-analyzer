@@ -66,16 +66,16 @@ anthropic.claude-haiku-4-5-20251001-v1:0,global,rpm,L-E5084BBA,Global cross-regi
 anthropic.claude-haiku-4-5-20251001-v1:0,global,tpd,L-B5C049AE,Global cross-region model inference tokens per day for Anthropic Claude Haiku 4.5
 anthropic.claude-haiku-4-5-20251001-v1:0,global,tpm,L-9A11C666,Global cross-region model inference tokens per minute for Anthropic Claude Haiku 4.5
 anthropic.claude-haiku-4-5-20251001-v1:0,us,rpm,L-CCA5DF70,Cross-region model inference requests per minute for Anthropic Claude Haiku 4.5
-anthropic.claude-haiku-4-5-20251001-v1:0,us,tpd,L-B5C049AE,Global cross-region model inference tokens per day for Anthropic Claude Haiku 4.5
+anthropic.claude-haiku-4-5-20251001-v1:0,us,tpd,L-6120CF2D,Model invocation max tokens per day for Anthropic Claude Haiku 4.5 (doubled for cross-region calls)
 anthropic.claude-haiku-4-5-20251001-v1:0,us,tpm,L-58BE175A,Cross-region model inference tokens per minute for Anthropic Claude Haiku 4.5
 anthropic.claude-haiku-4-5-20251001-v1:0,jp,rpm,L-CCA5DF70,Cross-region model inference requests per minute for Anthropic Claude Haiku 4.5
-anthropic.claude-haiku-4-5-20251001-v1:0,jp,tpd,L-B5C049AE,Global cross-region model inference tokens per day for Anthropic Claude Haiku 4.5
+anthropic.claude-haiku-4-5-20251001-v1:0,jp,tpd,L-6120CF2D,Model invocation max tokens per day for Anthropic Claude Haiku 4.5 (doubled for cross-region calls)
 anthropic.claude-haiku-4-5-20251001-v1:0,jp,tpm,L-58BE175A,Cross-region model inference tokens per minute for Anthropic Claude Haiku 4.5
 anthropic.claude-haiku-4-5-20251001-v1:0,eu,rpm,L-CCA5DF70,Cross-region model inference requests per minute for Anthropic Claude Haiku 4.5
-anthropic.claude-haiku-4-5-20251001-v1:0,eu,tpd,L-B5C049AE,Global cross-region model inference tokens per day for Anthropic Claude Haiku 4.5
+anthropic.claude-haiku-4-5-20251001-v1:0,eu,tpd,L-6120CF2D,Model invocation max tokens per day for Anthropic Claude Haiku 4.5 (doubled for cross-region calls)
 anthropic.claude-haiku-4-5-20251001-v1:0,eu,tpm,L-58BE175A,Cross-region model inference tokens per minute for Anthropic Claude Haiku 4.5
 anthropic.claude-haiku-4-5-20251001-v1:0,au,rpm,L-CCA5DF70,Cross-region model inference requests per minute for Anthropic Claude Haiku 4.5
-anthropic.claude-haiku-4-5-20251001-v1:0,au,tpd,L-B5C049AE,Global cross-region model inference tokens per day for Anthropic Claude Haiku 4.5
+anthropic.claude-haiku-4-5-20251001-v1:0,au,tpd,L-6120CF2D,Model invocation max tokens per day for Anthropic Claude Haiku 4.5 (doubled for cross-region calls)
 anthropic.claude-haiku-4-5-20251001-v1:0,au,tpm,L-58BE175A,Cross-region model inference tokens per minute for Anthropic Claude Haiku 4.5
 anthropic.claude-opus-4-5-20251101-v1:0,global,rpm,L-58424D95,Global cross-region model inference requests per minute for Anthropic Claude Opus 4.5
 anthropic.claude-opus-4-5-20251101-v1:0,global,tpd,L-E2985A8E,Global cross-region model inference tokens per day for Anthropic Claude Opus 4.5
@@ -90,12 +90,12 @@ cohere.embed-v4:0,global,rpm,L-7089DC7D,Global cross-region model inference requ
 cohere.embed-v4:0,global,tpd,L-795ADAB0,Global cross-region model inference tokens per day for Cohere Embed V4
 cohere.embed-v4:0,global,tpm,L-02DFBB76,Global cross-region model inference tokens per minute for Cohere Embed V4
 cohere.embed-v4:0,us,rpm,L-EB8C1F30,Cross-region model inference requests per minute for Cohere Embed V4
-cohere.embed-v4:0,us,tpd,L-795ADAB0,Global cross-region model inference tokens per day for Cohere Embed V4
+cohere.embed-v4:0,us,tpd,L-F1BB08BB,Model invocation max tokens per day for Cohere Embed V4 (doubled for cross-region calls)
 cohere.embed-v4:0,us,tpm,L-4C3F0FE6,Cross-region model inference tokens per minute for Cohere Embed V4
 cohere.embed-v4:0,base,rpm,L-BE5FD99B,On-demand model inference requests per minute for Cohere Embed V4
 cohere.embed-v4:0,base,tpm,L-C47B85D5,On-demand model inference tokens per minute for Cohere Embed V4
 cohere.embed-v4:0,eu,rpm,L-EB8C1F30,Cross-region model inference requests per minute for Cohere Embed V4
-cohere.embed-v4:0,eu,tpd,L-795ADAB0,Global cross-region model inference tokens per day for Cohere Embed V4
+cohere.embed-v4:0,eu,tpd,L-F1BB08BB,Model invocation max tokens per day for Cohere Embed V4 (doubled for cross-region calls)
 cohere.embed-v4:0,eu,tpm,L-4C3F0FE6,Cross-region model inference tokens per minute for Cohere Embed V4
 cohere.rerank-v3-5:0,base,rpm,L-11512E58,On-demand model inference requests per minute for Cohere Rerank 3.5
 meta.llama3-70b-instruct-v1:0,base,rpm,L-46D383AF,On-demand model inference requests per minute for Meta Llama 3 70B Instruct
@@ -168,7 +168,6 @@ anthropic.claude-3-7-sonnet-20250219-v1:0,eu,tpm,L-6E888CC2,Cross-region model i
 anthropic.claude-3-opus-20240229-v1:0,base,rpm,L-8050DFC8,On-demand model inference requests per minute for Anthropic Claude 3 Opus
 anthropic.claude-3-opus-20240229-v1:0,base,tpm,L-27477D78,On-demand model inference tokens per minute for Anthropic Claude 3 Opus
 anthropic.claude-3-opus-20240229-v1:0,us,rpm,L-EB15245D,Cross-region model inference requests per minute for Anthropic Claude 3 Opus
-anthropic.claude-3-opus-20240229-v1:0,us,tpd,L-28155387,Model invocation max tokens per day for Anthropic Claude Opus 4 V1 (doubled for cross-region calls)
 anthropic.claude-3-opus-20240229-v1:0,us,tpm,L-6C86825E,Cross-region model inference tokens per minute for Anthropic Claude 3 Opus
 anthropic.claude-opus-4-1-20250805-v1:0,us,rpm,L-7EC72A47,Cross-region model inference requests per minute for Anthropic Claude Opus 4.1
 anthropic.claude-opus-4-1-20250805-v1:0,us,tpd,L-AB98959C,Model invocation max tokens per day for Anthropic Claude Opus 4.1 (doubled for cross-region calls)

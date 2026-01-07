@@ -457,10 +457,7 @@ models:
           code: L-EB15245D
           name: Cross-region model inference requests per minute for Anthropic Claude
             3 Opus
-        tpd:
-          code: L-28155387
-          name: Model invocation max tokens per day for Anthropic Claude Opus 4 V1
-            (doubled for cross-region calls)
+        tpd: null
         tpm:
           code: L-6C86825E
           name: Cross-region model inference tokens per minute for Anthropic Claude
@@ -543,9 +540,9 @@ models:
           name: Cross-region model inference requests per minute for Anthropic Claude
             Haiku 4.5
         tpd:
-          code: L-B5C049AE
-          name: Global cross-region model inference tokens per day for Anthropic Claude
-            Haiku 4.5
+          code: L-6120CF2D
+          name: Model invocation max tokens per day for Anthropic Claude Haiku 4.5
+            (doubled for cross-region calls)
         tpm:
           code: L-58BE175A
           name: Cross-region model inference tokens per minute for Anthropic Claude
@@ -820,9 +817,9 @@ models:
           name: Cross-region model inference requests per minute for Cohere Embed
             V4
         tpd:
-          code: L-795ADAB0
-          name: Global cross-region model inference tokens per day for Cohere Embed
-            V4
+          code: L-F1BB08BB
+          name: Model invocation max tokens per day for Cohere Embed V4 (doubled for
+            cross-region calls)
         tpm:
           code: L-4C3F0FE6
           name: Cross-region model inference tokens per minute for Cohere Embed V4
