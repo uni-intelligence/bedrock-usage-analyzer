@@ -1,5 +1,7 @@
 # Bedrock Token Usage Statistics Calculator
 
+[![PyPI version](https://badge.fury.io/py/bedrock-usage-analyzer.svg)](https://pypi.org/project/bedrock-usage-analyzer/)
+
 This CLI tool visualizes foundation model (FM) usage in [Amazon Bedrock](https://aws.amazon.com/bedrock/). It calculates the  tokens-per-minute/TPM and requests-per-minute/RPM. It also aggregates the FM usage across Bedrock application inference profiles and provides visibility on current usage gap towards the service quotas.
 
 While [Amazon CloudWatch](https://aws.amazon.com/cloudwatch/) already provides metrics for the FMs used in Bedrock, it might not be straightforward to calculate TPM & RPM, to aggregate token usage across application inference profiles, and see how each profile contributes to usage. Also, the quota lookup needs to be done separately via [AWS service quotas](https://docs.aws.amazon.com/general/latest/gr/aws_service_limits.html). With this tool, you can specify the region and model to analyze and it will fetch the usage across last 1 hour, 1 day, 7 days, 14 days, and 30 days, each with aggregated data across the application inference profiles. It will generate HTML report containing the statistics table and time series data.
@@ -15,15 +17,15 @@ This tool works by calling AWS APIs from your local machine, including CloudWatc
 
 You can refresh the available regions, the available foundation models, and the service quotas mapping for the FMs using the `bedrock-usage-analyzer refresh` commands (or `bua refresh` for short). The FM to service quotas mapping is done intelligently with the help of foundation model called through Bedrock.
 
-⚠️ **Important Disclaimer** This tool is currently under 0.4.1-beta version. Before using this tool in any production or critical environment, you are strongly advised to review all code thoroughly and evaluate it against best practices, security and compliance standards, and other requirements.
+⚠️ **Important Disclaimer** This tool is currently under 0.4.2-beta version. Before using this tool in any production or critical environment, you are strongly advised to review all code thoroughly and evaluate it against best practices, security and compliance standards, and other requirements.
 
 ## Example Output
 
 The tool generates HTML report showing token usage over time with quota limits. Please find the example screenshots in the following.
 
-![image 1](./assets/image1.png)
-![image 2](./assets/image2.png)
-![image 3](./assets/image3.png)
+![image 1](https://raw.githubusercontent.com/awslabs/bedrock-usage-analyzer/main/assets/image1.png)
+![image 2](https://raw.githubusercontent.com/awslabs/bedrock-usage-analyzer/main/assets/image2.png)
+![image 3](https://raw.githubusercontent.com/awslabs/bedrock-usage-analyzer/main/assets/image3.png)
 
 *The report includes:*
 - **Quota visualization**: Red dashed lines showing TPM/RPM/TPD quotas
