@@ -30,35 +30,94 @@ class UserInputs:
             '30days': 300   # 5 minutes
         }
     
-    def collect(self):
-        """Interactive dialog to collect user inputs"""
+    def collect(self, region=None, model_id=None, granularity_config=None, skip_confirm=False):
+        """Interactive dialog to collect user inputs, skipping prompts for provided values.
+        
+        Args:
+            region: AWS region (skip region prompt if provided)
+            model_id: Model ID with optional prefix (skip model prompt if provided)
+            granularity_config: Dict of time period to seconds (skip granularity prompt if provided)
+            skip_confirm: Skip account confirmation prompt (for scripted usage)
+        """
         logger.info("This tool calculates token usage statistics (p50, p90, TPM, TPD, RPM) and throttling metrics for Bedrock models in your AWS account across Bedrock application inference profiles for a given foundation model.")
         logger.info("Statistics will be generated for: 1 hour, 1 day, 7 days, 14 days, and 30 days.")
         print()
 
         self.account = self._get_current_account()
-        confirm = input(f"AWS account: {self.account} - Continue? ([y]/n): ").lower()
-        if confirm not in ['','y']:
-            sys.exit(1)
+        if not skip_confirm:
+            confirm = input(f"AWS account: {self.account} - Continue? ([y]/n): ").lower()
+            if confirm not in ['','y']:
+                sys.exit(1)
+        else:
+            logger.info(f"AWS account: {self.account}")
         
-        # Region selection
-        self.region = self._select_region()
+        # Region selection (skip if provided via CLI)
+        if region:
+            self.region = region
+            logger.info(f"\nUsing region: {region}")
+        else:
+            self.region = self._select_region()
         
         # Ensure FM list exists for selected region
         self._ensure_fm_list(self.region)
         
-        # Granularity configuration
-        self._configure_granularity()
+        # Granularity configuration (skip if provided via CLI)
+        if granularity_config:
+            self.granularity_config = granularity_config
+            logger.info(f"\nUsing granularity config from CLI")
+        else:
+            self._configure_granularity()
         
-        # Model selection loop
-        while True:
-            model_config = self._select_model(self.region)
-            if model_config is not None:  
-                self.models.append(model_config)
+        # Model selection (skip if provided via CLI)
+        if model_id:
+            model_config = self._parse_model_id(model_id)
+            self.models.append(model_config)
+            logger.info(f"\nUsing model: {model_id}")
+        else:
+            # Model selection loop
+            while True:
+                model_config = self._select_model(self.region)
+                if model_config is not None:  
+                    self.models.append(model_config)
+                
+                add_more = input("\nAdd another model? (y/[n]): ").lower()
+                if add_more != 'y':
+                    break
+    
+    def _parse_model_id(self, model_id):
+        """Parse model ID from CLI argument.
+        
+        Model ID formats:
+        - Base model: 'amazon.nova-premier-v1:0', 'anthropic.claude-3-sonnet-20240229-v1:0'
+        - Cross-region: 'us.amazon.nova-premier-v1:0', 'eu.anthropic.claude-3-sonnet-20240229-v1:0'
+        
+        The prefix (us, eu, apac, global, etc.) indicates cross-region inference profile.
+        Provider names (amazon, anthropic, meta, etc.) are NOT prefixes.
+        
+        Args:
+            model_id: Model ID with optional prefix
             
-            add_more = input("\nAdd another model? (y/[n]): ").lower()
-            if add_more != 'y':
-                break
+        Returns:
+            dict: Model config with model_id and profile_prefix
+        """
+        # Known cross-region prefixes
+        CROSS_REGION_PREFIXES = {'us', 'eu', 'apac', 'global', 'jp', 'au'}
+        
+        # Check for cross-region prefix
+        if '.' in model_id:
+            first_part = model_id.split('.', 1)[0]
+            if first_part in CROSS_REGION_PREFIXES:
+                # Cross-region model: 'us.amazon.nova-premier-v1:0'
+                return {
+                    'model_id': model_id.split('.', 1)[1],  # 'amazon.nova-premier-v1:0'
+                    'profile_prefix': first_part  # 'us'
+                }
+        
+        # Base model: 'amazon.nova-premier-v1:0'
+        return {
+            'model_id': model_id,
+            'profile_prefix': None
+        }
     
     def _get_current_account(self):
         """Get current AWS account ID"""
