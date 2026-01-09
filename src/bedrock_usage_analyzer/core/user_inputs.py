@@ -30,22 +30,26 @@ class UserInputs:
             '30days': 300   # 5 minutes
         }
     
-    def collect(self, region=None, model_id=None, granularity_config=None):
+    def collect(self, region=None, model_id=None, granularity_config=None, skip_confirm=False):
         """Interactive dialog to collect user inputs, skipping prompts for provided values.
         
         Args:
             region: AWS region (skip region prompt if provided)
             model_id: Model ID with optional prefix (skip model prompt if provided)
             granularity_config: Dict of time period to seconds (skip granularity prompt if provided)
+            skip_confirm: Skip account confirmation prompt (for scripted usage)
         """
         logger.info("This tool calculates token usage statistics (p50, p90, TPM, TPD, RPM) and throttling metrics for Bedrock models in your AWS account across Bedrock application inference profiles for a given foundation model.")
         logger.info("Statistics will be generated for: 1 hour, 1 day, 7 days, 14 days, and 30 days.")
         print()
 
         self.account = self._get_current_account()
-        confirm = input(f"AWS account: {self.account} - Continue? ([y]/n): ").lower()
-        if confirm not in ['','y']:
-            sys.exit(1)
+        if not skip_confirm:
+            confirm = input(f"AWS account: {self.account} - Continue? ([y]/n): ").lower()
+            if confirm not in ['','y']:
+                sys.exit(1)
+        else:
+            logger.info(f"AWS account: {self.account}")
         
         # Region selection (skip if provided via CLI)
         if region:

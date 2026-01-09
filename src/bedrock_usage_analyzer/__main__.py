@@ -98,7 +98,8 @@ def cmd_analyze(args):
     user_inputs.collect(
         region=args.region,
         model_id=args.model_id,
-        granularity_config=granularity_config
+        granularity_config=granularity_config,
+        skip_confirm=args.yes
     )
     
     # Get output directory (from arg, prompt, or default)
@@ -233,6 +234,8 @@ def main():
     p_analyze.add_argument('-g', '--granularity',
                           help='Aggregation granularity: single value (1min, 5min, 1hour) for all periods, '
                                'or JSON for per-period config (e.g., \'{"1hour":"1min","1day":"5min","7days":"1hour","14days":"1hour","30days":"1hour"}\')')
+    p_analyze.add_argument('-y', '--yes', action='store_true',
+                          help='Skip account confirmation prompt')
     p_analyze.set_defaults(func=cmd_analyze)
     
     # refresh
