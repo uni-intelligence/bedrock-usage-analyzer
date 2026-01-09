@@ -263,6 +263,7 @@ bedrock-usage-analyzer analyze --region us-west-2 --granularity 1hour
 | `--model-id` | `-m` | Model ID with optional prefix (e.g., `amazon.nova-premier-v1:0` for base, `us.amazon.nova-premier-v1:0` for cross-region) |
 | `--granularity` | `-g` | Aggregation granularity (see below) |
 | `--output-dir` | `-o` | Directory to save results |
+| `--yes` | `-y` | Skip account confirmation prompt |
 
 **Granularity Options:**
 
@@ -296,11 +297,15 @@ You can specify granularity in two ways:
 To analyze usage in different AWS accounts, use the `AWS_PROFILE` environment variable:
 
 ```bash
+# Fully programmatic example (no prompts, no confirmations)
+AWS_PROFILE=my-profile-name bua analyze -r us-west-2 -m us.meta.llama4-scout-17b-instruct-v1:0 -g 1min -y -o .
+
 # Use a specific AWS profile
 AWS_PROFILE=production bedrock-usage-analyzer analyze \
   -r us-west-2 \
   -m amazon.nova-premier-v1:0 \
-  -g 1min
+  -g 1min \
+  -y
 
 # Or export for multiple commands
 export AWS_PROFILE=production
