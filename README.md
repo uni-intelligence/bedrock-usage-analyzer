@@ -17,7 +17,7 @@ This tool works by calling AWS APIs from your local machine, including CloudWatc
 
 You can refresh the available regions, the available foundation models, and the service quotas mapping for the FMs using the `bedrock-usage-analyzer refresh` commands (or `bua refresh` for short). The FM to service quotas mapping is done intelligently with the help of foundation model called through Bedrock.
 
-⚠️ **Important Disclaimer** This tool is currently under 0.4.2-beta version. Before using this tool in any production or critical environment, you are strongly advised to review all code thoroughly and evaluate it against best practices, security and compliance standards, and other requirements.
+⚠️ **Important Disclaimer** This tool is currently under 0.4.4-beta version. Before using this tool in any production or critical environment, you are strongly advised to review all code thoroughly and evaluate it against best practices, security and compliance standards, and other requirements.
 
 ## Example Output
 
@@ -231,6 +231,109 @@ The script will prompt you to:
 2. **Select model provider** - Filter by provider (Amazon, Anthropic, etc.)
 3. **Select model** - Choose the specific model to analyze
 4. **Select inference profile** (if applicable) - Choose base model or cross-region profile
+
+### Step 4b: Scripted/Non-Interactive Usage
+
+For automation, CI/CD pipelines, or scheduled runs, you can pass arguments directly to skip interactive prompts:
+
+```bash
+# Fully non-interactive (all arguments specified)
+bedrock-usage-analyzer analyze \
+  --region us-west-2 \
+  --model-id amazon.nova-premier-v1:0 \
+  --granularity 1min \
+  --output-dir ./results
+
+# With cross-region inference profile (note the 'us.' prefix)
+bedrock-usage-analyzer analyze \
+  --region us-west-2 \
+  --model-id us.amazon.nova-premier-v1:0 \
+  --granularity 5min
+
+# Partial arguments (prompts only for missing values)
+bedrock-usage-analyzer analyze --region us-west-2 --granularity 1hour
+# → prompts for model selection only
+```
+
+**CLI Arguments:**
+
+| Argument | Short | Description |
+|----------|-------|-------------|
+| `--region` | `-r` | AWS region (e.g., `us-west-2`, `eu-west-1`) |
+| `--model-id` | `-m` | Model ID with optional prefix (e.g., `amazon.nova-premier-v1:0` for base, `us.amazon.nova-premier-v1:0` for cross-region) |
+| `--granularity` | `-g` | Aggregation granularity (see below) |
+| `--output-dir` | `-o` | Directory to save results |
+
+**Granularity Options:**
+
+You can specify granularity in two ways:
+
+1. **Single value** - applies to all time periods:
+   ```bash
+   # Use 1-minute granularity for all periods
+   bedrock-usage-analyzer analyze -r us-west-2 -m amazon.nova-premier-v1:0 -g 1min
+   
+   # Use 5-minute granularity for all periods
+   bedrock-usage-analyzer analyze -r us-west-2 -m amazon.nova-premier-v1:0 -g 5min
+   
+   # Use 1-hour granularity for all periods
+   bedrock-usage-analyzer analyze -r us-west-2 -m amazon.nova-premier-v1:0 -g 1hour
+   ```
+
+2. **JSON format** - different granularity per time period:
+   ```bash
+   # Fine granularity for recent data, coarser for older data
+   bedrock-usage-analyzer analyze \
+     -r us-west-2 \
+     -m amazon.nova-premier-v1:0 \
+     -g '{"1hour":"1min","1day":"5min","7days":"1hour","14days":"1hour","30days":"1hour"}'
+   ```
+
+   When using JSON format, you must specify all five time periods: `1hour`, `1day`, `7days`, `14days`, `30days`. Valid values for each are: `1min`, `5min`, `1hour`.
+
+**Multi-Account Usage with AWS_PROFILE:**
+
+To analyze usage in different AWS accounts, use the `AWS_PROFILE` environment variable:
+
+```bash
+# Use a specific AWS profile
+AWS_PROFILE=production bedrock-usage-analyzer analyze \
+  -r us-west-2 \
+  -m amazon.nova-premier-v1:0 \
+  -g 1min
+
+# Or export for multiple commands
+export AWS_PROFILE=production
+bedrock-usage-analyzer analyze -r us-west-2 -m amazon.nova-premier-v1:0 -g 1min
+bedrock-usage-analyzer analyze -r us-east-1 -m amazon.nova-premier-v1:0 -g 1min
+
+# Switch to another account
+AWS_PROFILE=development bedrock-usage-analyzer analyze \
+  -r us-west-2 \
+  -m amazon.nova-premier-v1:0 \
+  -g 1min
+```
+
+Ensure your `~/.aws/credentials` file has the profiles configured:
+```ini
+[production]
+aws_access_key_id = AKIA...
+aws_secret_access_key = ...
+
+[development]
+aws_access_key_id = AKIA...
+aws_secret_access_key = ...
+```
+
+Or use SSO profiles in `~/.aws/config`:
+```ini
+[profile production]
+sso_start_url = https://my-sso.awsapps.com/start
+sso_region = us-east-1
+sso_account_id = 123456789012
+sso_role_name = PowerUserAccess
+region = us-west-2
+```
 
 ### Step 5: View Results
 

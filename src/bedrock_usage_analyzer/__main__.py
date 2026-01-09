@@ -20,6 +20,63 @@ logging.basicConfig(level=logging.INFO, format='%(message)s')
 logger = logging.getLogger(__name__)
 
 
+def _parse_granularity(granularity_arg):
+    """Parse granularity argument - single value or JSON.
+    
+    Args:
+        granularity_arg: Either a single value (e.g., '1min') or JSON string
+        
+    Returns:
+        dict: Granularity config with keys 1hour, 1day, 7days, 14days, 30days
+        
+    Raises:
+        ValueError: If format is invalid or incomplete
+    """
+    import json
+    
+    GRANULARITY_MAP = {
+        '1min': 60,
+        '5min': 300,
+        '1hour': 3600
+    }
+    
+    TIME_PERIODS = ['1hour', '1day', '7days', '14days', '30days']
+    
+    # Try parsing as JSON first
+    if granularity_arg.startswith('{'):
+        try:
+            parsed = json.loads(granularity_arg)
+        except json.JSONDecodeError as e:
+            raise ValueError(f"Invalid JSON format: {e}")
+        
+        # Validate all keys are present
+        missing = [k for k in TIME_PERIODS if k not in parsed]
+        if missing:
+            raise ValueError(
+                f"Incomplete granularity config. Missing: {', '.join(missing)}\n"
+                f"Either specify a single value (e.g., -g 1min) for all periods,\n"
+                f"or provide complete JSON with all keys: {', '.join(TIME_PERIODS)}\n"
+                f"Example: -g '{{\"1hour\":\"1min\",\"1day\":\"5min\",\"7days\":\"1hour\",\"14days\":\"1hour\",\"30days\":\"1hour\"}}'"
+            )
+        
+        # Convert string values to seconds
+        config = {}
+        for period in TIME_PERIODS:
+            val = parsed[period]
+            if val not in GRANULARITY_MAP:
+                raise ValueError(f"Invalid granularity '{val}' for {period}. Must be one of: {', '.join(GRANULARITY_MAP.keys())}")
+            config[period] = GRANULARITY_MAP[val]
+        
+        return config
+    
+    # Single value - apply to all periods
+    if granularity_arg not in GRANULARITY_MAP:
+        raise ValueError(f"Invalid granularity '{granularity_arg}'. Must be one of: {', '.join(GRANULARITY_MAP.keys())}")
+    
+    seconds = GRANULARITY_MAP[granularity_arg]
+    return {period: seconds for period in TIME_PERIODS}
+
+
 def cmd_analyze(args):
     """Run usage analysis."""
     from bedrock_usage_analyzer.core.user_inputs import UserInputs
@@ -28,8 +85,21 @@ def cmd_analyze(args):
     print(get_metadata_location_message())
     print()
     
+    # Parse granularity if provided
+    granularity_config = None
+    if args.granularity:
+        try:
+            granularity_config = _parse_granularity(args.granularity)
+        except ValueError as e:
+            logger.error(f"Error: {e}")
+            sys.exit(1)
+    
     user_inputs = UserInputs()
-    user_inputs.collect()
+    user_inputs.collect(
+        region=args.region,
+        model_id=args.model_id,
+        granularity_config=granularity_config
+    )
     
     # Get output directory (from arg, prompt, or default)
     output_dir = args.output_dir if args.output_dir else user_inputs.select_output_dir()
@@ -156,6 +226,13 @@ def main():
     p_analyze = subparsers.add_parser('analyze', help='Analyze token usage')
     p_analyze.add_argument('-o', '--output-dir', 
                           help='Directory to save results (default: prompt user)')
+    p_analyze.add_argument('-r', '--region',
+                          help='AWS region (e.g., us-west-2)')
+    p_analyze.add_argument('-m', '--model-id',
+                          help='Model ID or inference profile ID (e.g., amazon.nova-premier-v1:0 or us.amazon.nova-premier-v1:0)')
+    p_analyze.add_argument('-g', '--granularity',
+                          help='Aggregation granularity: single value (1min, 5min, 1hour) for all periods, '
+                               'or JSON for per-period config (e.g., \'{"1hour":"1min","1day":"5min","7days":"1hour","14days":"1hour","30days":"1hour"}\')')
     p_analyze.set_defaults(func=cmd_analyze)
     
     # refresh
