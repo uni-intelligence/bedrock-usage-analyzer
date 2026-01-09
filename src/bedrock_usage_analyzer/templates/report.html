@@ -80,6 +80,11 @@
     </div>
     {% endif %}
     
+    <div class="disclaimer-section" style="background-color: #f0f8ff; padding: 15px; margin-bottom: 20px; border-radius: 5px; border-left: 4px solid #4285F4;">
+        <h4 style="margin-top: 0;">⚠️ Important: Understanding Token-Based Throttling</h4>
+        <p style="margin-bottom: 0;">Low TPM/TPD values in this report do not rule out token-based throttling. Bedrock reserves <code>input_tokens + max_tokens</code> from your quota at request start, but CloudWatch only records actual tokens used after completion. If <code>max_tokens</code> is set high (e.g., 64K) but actual output is low, you may hit throttling limits that are invisible in these metrics. To diagnose, check your <code>max_tokens</code> settings and enable <a href="https://docs.aws.amazon.com/bedrock/latest/userguide/model-invocation-logging.html" target="_blank">model invocation logging</a>. See <a href="https://docs.aws.amazon.com/bedrock/latest/userguide/quotas-token-burndown.html" target="_blank">How tokens are counted in Amazon Bedrock</a> for details.</p>
+    </div>
+    
     <div class="merged-table">
         <h3>Statistics Summary</h3>
         <p style="font-style: italic; color: #666; margin-bottom: 10px;">Note: Numbers are rounded to the nearest integer</p>
@@ -849,6 +854,24 @@
                     disclaimer.style.marginBottom = '10px';
                     disclaimer.innerHTML = `Note: Quota mapping inferred using AI. Verify with <a href="${quotaInfo.url}" target="_blank">[${quotaInfo.code}] ${quotaInfo.name}</a>`;
                     canvasElement.parentNode.insertBefore(disclaimer, canvasElement);
+                }
+            }
+            
+            // Add max_tokens throttling disclaimer for TPM and TPD charts
+            if (metricType === 'TPM' || metricType === 'TPD') {
+                const existingThrottleDisclaimer = Array.from(canvasElement.parentNode.querySelectorAll('.throttle-disclaimer'));
+                if (existingThrottleDisclaimer.length === 0) {
+                    const throttleDisclaimer = document.createElement('p');
+                    throttleDisclaimer.className = 'throttle-disclaimer';
+                    throttleDisclaimer.style.fontSize = '0.8em';
+                    throttleDisclaimer.style.fontStyle = 'italic';
+                    throttleDisclaimer.style.color = '#856404';
+                    throttleDisclaimer.style.backgroundColor = '#fff3cd';
+                    throttleDisclaimer.style.padding = '8px';
+                    throttleDisclaimer.style.borderRadius = '4px';
+                    throttleDisclaimer.style.marginBottom = '10px';
+                    throttleDisclaimer.innerHTML = `⚠️ Low ${metricType} does not rule out throttling. Bedrock reserves <code>input_tokens + max_tokens</code> at request start. <a href="https://docs.aws.amazon.com/bedrock/latest/userguide/quotas-token-burndown.html" target="_blank">Learn more</a>`;
+                    canvasElement.parentNode.insertBefore(throttleDisclaimer, canvasElement);
                 }
             }
             
